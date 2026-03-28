@@ -1,107 +1,248 @@
 {
   "metadata": {
-    "version": "0.4.0-pw003-admission-m1",
-    "last_updated": "2026-03-28T03:00:00Z"
+    "version": "0.5.0-pw003-route-surface-m2",
+    "last_updated": "2026-03-28T09:58:00Z"
   },
   "decisions": [
+    {
+      "id": "FD-012",
+      "title": "Route-first continuity scaffolding across required workflow surfaces",
+      "decision": "Add guarded scaffold routes for required dashboards and workflow entry points before implementing module engines.",
+      "rationale": "Keeps architecture graph connected so future features can be implemented with explicit route and dashboard touch points.",
+      "impacted_modules": [
+        "dashboards",
+        "weekly_forms",
+        "daily_entries",
+        "signatures",
+        "warnings_exceptions",
+        "reports",
+        "import_export",
+        "billing",
+        "payroll",
+        "form_builder"
+      ],
+      "constraints": [
+        "scaffold routes must remain role-guarded",
+        "memory graph must be updated with route/workflow continuity"
+      ],
+      "future_implications": [
+        "incremental feature work can attach to existing route surfaces",
+        "requires follow-up implementation for business logic and persistence"
+      ]
+    },
     {
       "id": "FD-011",
       "title": "PW-003 admission vertical slice with in-memory repository",
       "decision": "Deliver patient admission/list/detail as a connected MVP using an in-memory patient repository before introducing persistent storage.",
       "rationale": "Unblocks operational workflow validation and route integration while minimizing early-phase infrastructure coupling.",
-      "impacted_modules": ["patient_admission", "patient_management", "dashboards", "scheduling"],
-      "constraints": ["data is non-persistent", "multi-instance consistency is not guaranteed", "must be replaced before production"],
-      "future_implications": ["repository interface can be swapped for database adapter", "admission integration tests can remain stable during data-layer migration"]
+      "impacted_modules": [
+        "patient_admission",
+        "patient_management",
+        "dashboards",
+        "scheduling"
+      ],
+      "constraints": [
+        "data is non-persistent",
+        "multi-instance consistency is not guaranteed",
+        "must be replaced before production"
+      ],
+      "future_implications": [
+        "repository interface can be swapped for database adapter",
+        "admission integration tests can remain stable during data-layer migration"
+      ]
     },
     {
       "id": "FD-010",
       "title": "Deterministic selector progression before dashboard routing",
       "decision": "Only redirect to dashboard/portal routes when both selectedAgencyId and activeRole are explicitly set; otherwise force selector steps in order.",
       "rationale": "Prevents redirect loops and ambiguous routing when session scope allows multiple agencies or roles.",
-      "impacted_modules": ["auth", "tenancy", "role_management", "dashboards"],
-      "constraints": ["auto-selection allowed only when single deterministic option", "zero-role selection must fail safe to agency selector"],
-      "future_implications": ["simpler middleware reasoning", "clearer test matrix for selector transitions"]
+      "impacted_modules": [
+        "auth",
+        "tenancy",
+        "role_management",
+        "dashboards"
+      ],
+      "constraints": [
+        "auto-selection allowed only when single deterministic option",
+        "zero-role selection must fail safe to agency selector"
+      ],
+      "future_implications": [
+        "simpler middleware reasoning",
+        "clearer test matrix for selector transitions"
+      ]
     },
     {
       "id": "FD-009",
       "title": "PW-002 mock identity and cookie session model",
       "decision": "Use seeded mock user credentials and cookie-based session context for agency and role continuity while production auth is pending.",
       "rationale": "Allows end-to-end route guard and redirect behavior to be implemented now without blocking on identity provider selection.",
-      "impacted_modules": ["auth", "tenancy", "role_management", "dashboards"],
-      "constraints": ["not production-secure", "must be replaced with signed secure session and external identity"],
-      "future_implications": ["identity provider integration in next phase", "add secure token/session rotation"]
+      "impacted_modules": [
+        "auth",
+        "tenancy",
+        "role_management",
+        "dashboards"
+      ],
+      "constraints": [
+        "not production-secure",
+        "must be replaced with signed secure session and external identity"
+      ],
+      "future_implications": [
+        "identity provider integration in next phase",
+        "add secure token/session rotation"
+      ]
     },
     {
       "id": "FD-008",
       "title": "Frontend scaffold in apps/web with route groups",
       "decision": "Create the Next.js app in apps/web and use App Router route groups for public, auth, and app surfaces.",
       "rationale": "Keeps root repository clean for shared memory/docs and supports future multi-app expansion.",
-      "impacted_modules": ["landing_page", "auth", "tenancy", "role_management", "dashboards"],
-      "constraints": ["shared contracts must stay path-agnostic", "future CI must target apps/web"],
-      "future_implications": ["can add worker/api apps without restructuring", "workspace-level scripts should orchestrate subapps"]
+      "impacted_modules": [
+        "landing_page",
+        "auth",
+        "tenancy",
+        "role_management",
+        "dashboards"
+      ],
+      "constraints": [
+        "shared contracts must stay path-agnostic",
+        "future CI must target apps/web"
+      ],
+      "future_implications": [
+        "can add worker/api apps without restructuring",
+        "workspace-level scripts should orchestrate subapps"
+      ]
     },
     {
       "id": "FD-001",
       "title": "Hybrid weekly signature model",
       "decision": "Support both caregiver and patient weekly signatures, captured in caregiver flow and patient portal.",
       "rationale": "Improves flexibility while maintaining compliance-oriented evidence capture.",
-      "impacted_modules": ["signatures", "weekly_forms", "patient_portal", "warnings_exceptions"],
-      "constraints": ["both signatures required unless policy exception", "must deep-link unresolved signatures"],
-      "future_implications": ["signature verification enhancements", "device trust policies"]
+      "impacted_modules": [
+        "signatures",
+        "weekly_forms",
+        "patient_portal",
+        "warnings_exceptions"
+      ],
+      "constraints": [
+        "both signatures required unless policy exception",
+        "must deep-link unresolved signatures"
+      ],
+      "future_implications": [
+        "signature verification enhancements",
+        "device trust policies"
+      ]
     },
     {
       "id": "FD-002",
       "title": "Copy policy excludes signatures and GPS",
       "decision": "Copy previous day/week can copy only allowed routine fields and task patterns; signatures, GPS, approvals, and incident fields are never copied.",
       "rationale": "Prevents fraudulent carryover and preserves event integrity.",
-      "impacted_modules": ["weekly_forms", "daily_entries", "signatures", "gps_evv", "warnings_exceptions"],
-      "constraints": ["must set copied metadata flags", "must require review before submit"],
-      "future_implications": ["copy behavior anomaly detection"]
+      "impacted_modules": [
+        "weekly_forms",
+        "daily_entries",
+        "signatures",
+        "gps_evv",
+        "warnings_exceptions"
+      ],
+      "constraints": [
+        "must set copied metadata flags",
+        "must require review before submit"
+      ],
+      "future_implications": [
+        "copy behavior anomaly detection"
+      ]
     },
     {
       "id": "FD-003",
       "title": "Admin edits are revision-based",
       "decision": "Submitted forms are immutable; admin edits generate a new revision record with audit metadata.",
       "rationale": "Ensures audit trail integrity and legal defensibility.",
-      "impacted_modules": ["revision_history", "weekly_forms", "warnings_exceptions", "reports"],
-      "constraints": ["no direct overwrite", "must track who/when/why"],
-      "future_implications": ["revision compare UI", "regulatory audit exports"]
+      "impacted_modules": [
+        "revision_history",
+        "weekly_forms",
+        "warnings_exceptions",
+        "reports"
+      ],
+      "constraints": [
+        "no direct overwrite",
+        "must track who/when/why"
+      ],
+      "future_implications": [
+        "revision compare UI",
+        "regulatory audit exports"
+      ]
     },
     {
       "id": "FD-004",
       "title": "Effective-date authorization rules",
       "decision": "Authorization changes apply forward from effective date; historical submissions remain valid against active-at-time rules.",
       "rationale": "Avoids retroactive invalidation and keeps historical truth consistent.",
-      "impacted_modules": ["patient_authorization", "weekly_forms", "billing", "warnings_exceptions"],
-      "constraints": ["versioned rules required", "validation must resolve by date"],
-      "future_implications": ["backdated corrections may require policy gate"]
+      "impacted_modules": [
+        "patient_authorization",
+        "weekly_forms",
+        "billing",
+        "warnings_exceptions"
+      ],
+      "constraints": [
+        "versioned rules required",
+        "validation must resolve by date"
+      ],
+      "future_implications": [
+        "backdated corrections may require policy gate"
+      ]
     },
     {
       "id": "FD-005",
       "title": "Exception visibility for admin and case manager",
       "decision": "Both healthcare admin and case manager can access exception review queues with role-scoped assignments.",
       "rationale": "Supports care continuity and timely issue resolution.",
-      "impacted_modules": ["warnings_exceptions", "dashboards", "notifications"],
-      "constraints": ["tenant isolation and patient assignment boundaries"],
-      "future_implications": ["escalation rules and SLA tracking"]
+      "impacted_modules": [
+        "warnings_exceptions",
+        "dashboards",
+        "notifications"
+      ],
+      "constraints": [
+        "tenant isolation and patient assignment boundaries"
+      ],
+      "future_implications": [
+        "escalation rules and SLA tracking"
+      ]
     },
     {
       "id": "FD-006",
       "title": "GPS offline fallback context capture",
       "decision": "When GPS confidence is low/offline, capture available context and compare later to patient address policy.",
       "rationale": "Maintains workflow continuity without dropping compliance evidence.",
-      "impacted_modules": ["gps_evv", "warnings_exceptions", "anomaly_hooks"],
-      "constraints": ["manual override reason where policy allows"],
-      "future_implications": ["confidence scoring and fraud model inputs"]
+      "impacted_modules": [
+        "gps_evv",
+        "warnings_exceptions",
+        "anomaly_hooks"
+      ],
+      "constraints": [
+        "manual override reason where policy allows"
+      ],
+      "future_implications": [
+        "confidence scoring and fraud model inputs"
+      ]
     },
     {
       "id": "FD-007",
       "title": "Caregiver daily draft and weekly submit lifecycle",
       "decision": "Caregiver saves drafts daily and performs weekly submit after required review and signatures.",
       "rationale": "Matches real field operations and reduces end-of-week data loss.",
-      "impacted_modules": ["daily_entries", "weekly_forms", "dashboards", "signatures"],
-      "constraints": ["simple mobile UX", "clear sync status"],
-      "future_implications": ["offline autosave and merge conflict handling"]
+      "impacted_modules": [
+        "daily_entries",
+        "weekly_forms",
+        "dashboards",
+        "signatures"
+      ],
+      "constraints": [
+        "simple mobile UX",
+        "clear sync status"
+      ],
+      "future_implications": [
+        "offline autosave and merge conflict handling"
+      ]
     }
   ]
 }

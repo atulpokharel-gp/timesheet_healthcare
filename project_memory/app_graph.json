@@ -1,19 +1,19 @@
 {
   "metadata": {
     "project": "timesheet_healthcare",
-    "version": "0.4.0-pw003-admission-m1",
+    "version": "0.5.0-pw003-route-surface-m2",
     "generated_at": "2026-03-28T00:00:00Z",
-    "last_updated": "2026-03-28T03:00:00Z",
-    "status": "pw003-admission-m1-implemented"
+    "last_updated": "2026-03-28T09:58:00Z",
+    "status": "pw003-route-surfaces-scaffolded"
   },
   "summary": {
-    "current_codebase_state": "scaffolded_with_auth_routing_and_admission_mvp",
+    "current_codebase_state": "scaffolded_with_auth_routing_admission_mvp_and_connected_route_surfaces",
     "observed_files": [
       "README.md",
       "project_memory/*",
       "apps/web/*"
     ],
-    "architectural_completeness": "medium_to_high",
+    "architectural_completeness": "high_for_surface_mapping_medium_for_business_logic",
     "overall_risk": "high"
   },
   "nodes": [
@@ -22,7 +22,7 @@
       "type": "system",
       "name": "timesheet_healthcare",
       "status": "exists",
-      "implementation_completeness": 43,
+      "implementation_completeness": 51,
       "risk_level": "high",
       "role_owner": [
         "super_admin"
@@ -39,7 +39,24 @@
         "/dashboard/admin/patients/:id",
         "/dashboard/case-manager",
         "/dashboard/caregiver",
-        "/portal/patient"
+        "/portal/patient",
+        "/why-choose-us",
+        "/what-we-solve",
+        "/dashboard/admin/assignments",
+        "/dashboard/admin/authorizations",
+        "/dashboard/admin/scheduling",
+        "/dashboard/admin/exceptions",
+        "/dashboard/admin/submissions",
+        "/dashboard/admin/form-builder",
+        "/dashboard/admin/reports",
+        "/dashboard/admin/file-center",
+        "/dashboard/admin/billing",
+        "/dashboard/admin/payroll",
+        "/dashboard/admin/exports",
+        "/dashboard/case-manager/exceptions",
+        "/dashboard/caregiver/visits/:occurrenceId",
+        "/dashboard/caregiver/week/:weekId",
+        "/portal/patient/signatures"
       ],
       "connected_modules": [
         "landing_page",
@@ -55,7 +72,7 @@
         "billing",
         "reports"
       ],
-      "last_updated": "2026-03-28T03:00:00Z"
+      "last_updated": "2026-03-28T09:58:00Z"
     },
     {
       "id": "readme",
@@ -76,7 +93,7 @@
       "type": "application",
       "name": "nextjs_multitenant_app",
       "status": "partially_implemented",
-      "implementation_completeness": 52,
+      "implementation_completeness": 61,
       "risk_level": "high",
       "role_owner": [
         "super_admin",
@@ -97,7 +114,24 @@
         "/dashboard/admin/patients/:id",
         "/dashboard/case-manager",
         "/dashboard/caregiver",
-        "/portal/patient"
+        "/portal/patient",
+        "/why-choose-us",
+        "/what-we-solve",
+        "/dashboard/admin/assignments",
+        "/dashboard/admin/authorizations",
+        "/dashboard/admin/scheduling",
+        "/dashboard/admin/exceptions",
+        "/dashboard/admin/submissions",
+        "/dashboard/admin/form-builder",
+        "/dashboard/admin/reports",
+        "/dashboard/admin/file-center",
+        "/dashboard/admin/billing",
+        "/dashboard/admin/payroll",
+        "/dashboard/admin/exports",
+        "/dashboard/case-manager/exceptions",
+        "/dashboard/caregiver/visits/:occurrenceId",
+        "/dashboard/caregiver/week/:weekId",
+        "/portal/patient/signatures"
       ],
       "connected_modules": [
         "landing_page",
@@ -122,7 +156,7 @@
         "notifications",
         "fraud_anomaly_hooks"
       ],
-      "last_updated": "2026-03-28T03:00:00Z"
+      "last_updated": "2026-03-28T09:58:00Z"
     }
   ],
   "edges": [
@@ -140,11 +174,10 @@
     }
   ],
   "gaps": [
-    "Auth uses seeded mock users and cookie session without external identity provider.",
-    "Domain workflows are partially implemented, with patient admission currently in MVP state.",
-    "Routes rely on in-memory data stores where persistent APIs are expected.",
-    "No persistence layer exists.",
-    "Dependencies are declared but not installed in this session."
+    "Auth remains mock-backed with unsigned cookie session model.",
+    "Core workflow routes are scaffolded but operational engines (warnings, signatures, EVV, exports) are not implemented.",
+    "Patient admission still uses in-memory data and lacks persistent repository.",
+    "No automated tests exist for route continuity, workflow transitions, or contract validations."
   ],
   "continuity_risks": [
     "Building features without base architecture will create disconnected modules.",

@@ -1,34 +1,1010 @@
 {
   "metadata": {
-    "version": "0.4.0-pw003-admission-m1",
-    "last_updated": "2026-03-28T03:00:00Z"
+    "version": "0.5.0-pw003-route-surface-m2",
+    "last_updated": "2026-03-28T09:58:00Z"
   },
   "modules": [
-    {"id": "landing_page", "purpose": "Marketing site and value communication", "status": "scaffolded_foundation", "routes_pages": ["/"], "components": ["LandingPage"], "entities_used": [], "apis_used": [], "role_ownership": ["public"], "reusable_elements": ["hero", "feature_cards", "cta"], "technical_debt": ["copy and analytics integrations pending"], "missing_features": ["full why-choose-us/problem/faq depth"], "related_dashboards": [], "related_workflows": ["wf_landing_to_portal"]},
-    {"id": "auth", "purpose": "Identity and session management", "status": "implemented_mock", "routes_pages": ["/auth/login", "/auth/forgot-password", "/auth/reset-password"], "components": ["LoginPage", "middleware", "session_cookie_manager"], "entities_used": ["user", "session"], "apis_used": ["auth_api"], "role_ownership": ["all_roles"], "reusable_elements": ["auth_form", "guard"], "technical_debt": ["uses seeded credentials and unsigned cookie payload"], "missing_features": ["external identity provider", "forgot/reset/invite/mfa-readiness"], "related_dashboards": ["all"], "related_workflows": ["wf_landing_to_portal"]},
-    {"id": "tenancy", "purpose": "Agency scoping and tenant isolation", "status": "implemented_mock", "routes_pages": ["/select-agency"], "components": ["SelectAgencyPage", "session_agency_selector"], "entities_used": ["agency", "role_assignment"], "apis_used": ["agency_api"], "role_ownership": ["all_roles"], "reusable_elements": ["agency_selector"], "technical_debt": ["agency data comes from mock scope list"], "missing_features": ["database-backed tenant policies", "isolation enforcement"], "related_dashboards": ["all"], "related_workflows": ["wf_landing_to_portal"]},
-    {"id": "role_management", "purpose": "Role selection and permission mapping", "status": "implemented_mock", "routes_pages": ["/select-role"], "components": ["SelectRolePage", "role_redirect_resolver"], "entities_used": ["role_assignment"], "apis_used": ["rbac_api"], "role_ownership": ["all_roles"], "reusable_elements": ["role_selector", "route_guard"], "technical_debt": ["role checks are route-prefix based"], "missing_features": ["policy engine", "permission matrix APIs"], "related_dashboards": ["all"], "related_workflows": ["wf_landing_to_portal"]},
-    {"id": "dashboards", "purpose": "Role-based dashboard surfaces", "status": "partially_implemented", "routes_pages": ["/dashboard/*", "/portal/patient"], "components": ["DashboardShell", "HealthcareAdminDashboardPage"], "entities_used": ["warning", "weekly_form", "schedule", "patient"], "apis_used": ["dashboard_api", "patient_api"], "role_ownership": ["super_admin", "healthcare_admin", "case_manager", "caregiver", "patient"], "reusable_elements": ["kpi_cards", "action_panels", "tables"], "technical_debt": ["non-admin dashboards remain placeholders"], "missing_features": ["case manager, caregiver, patient operational widgets"], "related_dashboards": ["super_admin", "healthcare_admin", "case_manager", "caregiver", "patient"], "related_workflows": ["wf_landing_to_portal", "wf_caregiver_daily_visit", "wf_patient_admission"]},
-    {"id": "patient_admission", "purpose": "Create and activate patient records", "status": "implemented_mvp", "routes_pages": ["/dashboard/admin/patients/new"], "components": ["PatientAdmissionPage", "createPatientAction"], "entities_used": ["patient", "patient_identifiers", "patient_authorization", "care_plan"], "apis_used": ["patient_api"], "role_ownership": ["healthcare_admin"], "reusable_elements": ["patient_form", "assignment_picker"], "technical_debt": ["in-memory storage", "no authorization effective-date rule integration"], "missing_features": ["full wizard checkpoints", "authorization policy engine", "persistent repository"], "related_dashboards": ["healthcare_admin"], "related_workflows": ["wf_patient_admission"]},
-    {"id": "patient_management", "purpose": "Patient lifecycle and reassignment", "status": "implemented_mvp", "routes_pages": ["/dashboard/admin/patients", "/dashboard/admin/patients/:id"], "components": ["AdminPatientsPage", "PatientDetailPage"], "entities_used": ["patient", "patient_caregiver_assignment", "patient_case_manager_assignment"], "apis_used": ["patient_api"], "role_ownership": ["healthcare_admin", "case_manager"], "reusable_elements": ["patient_table", "history_panel"], "technical_debt": ["no reassignment history yet", "no search/filter controls"], "missing_features": ["history timeline", "staff reassignment", "case manager scoped views"], "related_dashboards": ["healthcare_admin", "case_manager"], "related_workflows": ["wf_patient_admission"]},
-    {"id": "caregiver_management", "purpose": "Caregiver record and agency mapping", "status": "not_implemented", "routes_pages": ["/dashboard/admin/caregivers"], "components": [], "entities_used": ["user", "agency"], "apis_used": ["caregiver_api"], "role_ownership": ["healthcare_admin"], "reusable_elements": ["staff_table"], "technical_debt": ["missing implementation"], "missing_features": ["crud and assignments"], "related_dashboards": ["healthcare_admin"], "related_workflows": ["wf_patient_admission"]},
-    {"id": "case_manager_management", "purpose": "Case manager record and assignment support", "status": "not_implemented", "routes_pages": ["/dashboard/admin/case-managers"], "components": [], "entities_used": ["user", "patient_case_manager_assignment"], "apis_used": ["case_manager_api"], "role_ownership": ["healthcare_admin"], "reusable_elements": ["staff_table"], "technical_debt": ["missing implementation"], "missing_features": ["crud and assignments"], "related_dashboards": ["healthcare_admin"], "related_workflows": ["wf_patient_admission"]},
-    {"id": "patient_portal", "purpose": "Patient-facing weekly signature and visibility", "status": "scaffolded_foundation", "routes_pages": ["/portal/patient"], "components": ["PatientPortalPage"], "entities_used": ["patient", "weekly_form", "signature", "notification"], "apis_used": ["patient_portal_api"], "role_ownership": ["patient"], "reusable_elements": ["signature_prompt", "notification_list"], "technical_debt": ["portal currently scaffold-only"], "missing_features": ["portal and signature tasks"], "related_dashboards": ["patient"], "related_workflows": ["wf_weekly_submission_and_signatures"]},
-    {"id": "scheduling", "purpose": "Daily/recurring scheduling and visit calendar", "status": "not_implemented", "routes_pages": ["/dashboard/admin/schedules", "/dashboard/caregiver/schedule"], "components": [], "entities_used": ["schedule", "schedule_occurrence"], "apis_used": ["schedule_api"], "role_ownership": ["healthcare_admin", "caregiver"], "reusable_elements": ["calendar", "conflict_badges"], "technical_debt": ["missing implementation"], "missing_features": ["recurrence and conflict engine"], "related_dashboards": ["healthcare_admin", "caregiver"], "related_workflows": ["wf_caregiver_daily_visit"]},
-    {"id": "weekly_forms", "purpose": "Weekly timesheet and daily entries", "status": "not_implemented", "routes_pages": ["/dashboard/caregiver/week/:weekId"], "components": [], "entities_used": ["weekly_form", "daily_entry", "time_entry"], "apis_used": ["timesheet_api"], "role_ownership": ["caregiver", "healthcare_admin"], "reusable_elements": ["day_cards", "weekly_totals"], "technical_debt": ["missing implementation"], "missing_features": ["draft/save/submit/copy"], "related_dashboards": ["caregiver", "healthcare_admin"], "related_workflows": ["wf_caregiver_daily_visit", "wf_weekly_submission_and_signatures"]},
-    {"id": "daily_entries", "purpose": "Per-day task completion and notes", "status": "not_implemented", "routes_pages": ["/dashboard/caregiver/visits/:occurrenceId"], "components": [], "entities_used": ["daily_entry", "care_plan_task"], "apis_used": ["timesheet_api"], "role_ownership": ["caregiver"], "reusable_elements": ["task_checklist", "notes_input"], "technical_debt": ["missing implementation"], "missing_features": ["offline queue"], "related_dashboards": ["caregiver"], "related_workflows": ["wf_caregiver_daily_visit"]},
-    {"id": "signatures", "purpose": "Hybrid weekly signatures", "status": "not_implemented", "routes_pages": ["/dashboard/caregiver/week/:weekId/signatures", "/portal/patient/signatures"], "components": [], "entities_used": ["signature", "weekly_form"], "apis_used": ["signature_api"], "role_ownership": ["caregiver", "patient", "healthcare_admin"], "reusable_elements": ["signature_pad", "signature_status"], "technical_debt": ["missing implementation"], "missing_features": ["hybrid flow and enforcement"], "related_dashboards": ["caregiver", "patient", "healthcare_admin"], "related_workflows": ["wf_weekly_submission_and_signatures"]},
-    {"id": "gps_evv", "purpose": "Clock in/out location evidence", "status": "not_implemented", "routes_pages": ["/dashboard/caregiver/visits/:occurrenceId"], "components": [], "entities_used": ["gps_event", "time_entry"], "apis_used": ["evv_api"], "role_ownership": ["caregiver", "healthcare_admin", "case_manager"], "reusable_elements": ["clock_buttons", "gps_status"], "technical_debt": ["missing implementation"], "missing_features": ["offline fallback and confidence scoring"], "related_dashboards": ["caregiver", "healthcare_admin", "case_manager"], "related_workflows": ["wf_caregiver_daily_visit"]},
-    {"id": "warnings_exceptions", "purpose": "Warning generation and exception review", "status": "not_implemented", "routes_pages": ["/dashboard/admin/exceptions", "/dashboard/case-manager/exceptions"], "components": [], "entities_used": ["warning", "exception"], "apis_used": ["warning_api"], "role_ownership": ["healthcare_admin", "case_manager"], "reusable_elements": ["exception_table", "deep_link_resolver"], "technical_debt": ["missing implementation"], "missing_features": ["engine and routing links"], "related_dashboards": ["healthcare_admin", "case_manager", "caregiver"], "related_workflows": ["wf_weekly_submission_and_signatures", "wf_admin_revision_and_exports"]},
-    {"id": "revision_history", "purpose": "Immutable submission revisions and audit trail", "status": "not_implemented", "routes_pages": ["/dashboard/admin/revisions"], "components": [], "entities_used": ["revision", "weekly_form"], "apis_used": ["revision_api"], "role_ownership": ["healthcare_admin", "super_admin"], "reusable_elements": ["diff_viewer", "change_timeline"], "technical_debt": ["missing implementation"], "missing_features": ["revision compare"], "related_dashboards": ["healthcare_admin", "super_admin"], "related_workflows": ["wf_admin_revision_and_exports"]},
-    {"id": "form_builder", "purpose": "Template and payer-specific form configuration", "status": "not_implemented", "routes_pages": ["/dashboard/admin/form-builder"], "components": [], "entities_used": ["form_template", "form_template_version"], "apis_used": ["form_builder_api"], "role_ownership": ["healthcare_admin"], "reusable_elements": ["field_palette", "layout_preview"], "technical_debt": ["missing implementation"], "missing_features": ["versioned templates and assignment"], "related_dashboards": ["healthcare_admin"], "related_workflows": ["wf_patient_admission"]},
-    {"id": "printable_pdf_export", "purpose": "Paper-like export output", "status": "not_implemented", "routes_pages": ["/dashboard/admin/print-preview"], "components": [], "entities_used": ["weekly_form", "signature"], "apis_used": ["pdf_api"], "role_ownership": ["healthcare_admin", "super_admin"], "reusable_elements": ["print_layout", "signature_blocks"], "technical_debt": ["missing implementation"], "missing_features": ["payer-specific layout"], "related_dashboards": ["healthcare_admin"], "related_workflows": ["wf_admin_revision_and_exports"]},
-    {"id": "reports", "purpose": "Operational and financial KPI reporting", "status": "not_implemented", "routes_pages": ["/dashboard/admin/reports", "/dashboard/super-admin/reports"], "components": [], "entities_used": ["report_definition", "payroll_line_item", "billing_line_item", "warning"], "apis_used": ["report_api"], "role_ownership": ["healthcare_admin", "super_admin"], "reusable_elements": ["kpi_tiles", "trend_charts", "filters"], "technical_debt": ["missing implementation"], "missing_features": ["all required report sets"], "related_dashboards": ["healthcare_admin", "super_admin"], "related_workflows": ["wf_admin_revision_and_exports"]},
-    {"id": "import_export", "purpose": "File center, jobs, and status tracking", "status": "not_implemented", "routes_pages": ["/dashboard/admin/file-center"], "components": [], "entities_used": ["import_job", "export_job", "parser_job"], "apis_used": ["file_center_api"], "role_ownership": ["healthcare_admin", "super_admin"], "reusable_elements": ["job_table", "upload_dropzone"], "technical_debt": ["missing implementation"], "missing_features": ["job orchestration"], "related_dashboards": ["healthcare_admin", "super_admin"], "related_workflows": ["wf_admin_revision_and_exports"]},
-    {"id": "parser", "purpose": "Template/data parsing", "status": "not_implemented", "routes_pages": ["/dashboard/admin/file-center/parser"], "components": [], "entities_used": ["parser_job"], "apis_used": ["parser_api"], "role_ownership": ["healthcare_admin", "super_admin"], "reusable_elements": ["mapping_ui", "preview_grid"], "technical_debt": ["missing implementation"], "missing_features": ["mapping and validation"], "related_dashboards": ["healthcare_admin", "super_admin"], "related_workflows": ["wf_admin_revision_and_exports"]},
-    {"id": "payroll", "purpose": "Payable line item generation", "status": "not_implemented", "routes_pages": ["/dashboard/admin/payroll"], "components": [], "entities_used": ["payroll_rule", "payroll_line_item"], "apis_used": ["payroll_api"], "role_ownership": ["healthcare_admin", "super_admin"], "reusable_elements": ["payroll_table", "approval_panel"], "technical_debt": ["missing implementation"], "missing_features": ["rule engine and exports"], "related_dashboards": ["healthcare_admin", "super_admin"], "related_workflows": ["wf_admin_revision_and_exports"]},
-    {"id": "billing", "purpose": "Billing-ready line item generation", "status": "not_implemented", "routes_pages": ["/dashboard/admin/billing"], "components": [], "entities_used": ["billing_rule", "billing_line_item"], "apis_used": ["billing_api"], "role_ownership": ["healthcare_admin", "super_admin"], "reusable_elements": ["billing_table", "service_code_mapper"], "technical_debt": ["missing implementation"], "missing_features": ["payer modes and exports"], "related_dashboards": ["healthcare_admin", "super_admin"], "related_workflows": ["wf_admin_revision_and_exports"]},
-    {"id": "notification_system", "purpose": "Reminder and assignment notifications", "status": "not_implemented", "routes_pages": ["/dashboard/*/notifications"], "components": [], "entities_used": ["notification", "warning"], "apis_used": ["notification_api"], "role_ownership": ["all_roles"], "reusable_elements": ["notification_center", "badge_counts"], "technical_debt": ["missing implementation"], "missing_features": ["delivery channels and preferences"], "related_dashboards": ["all"], "related_workflows": ["wf_weekly_submission_and_signatures", "wf_admin_revision_and_exports"]},
-    {"id": "fraud_anomaly_hooks", "purpose": "Anomaly detection readiness points", "status": "not_implemented", "routes_pages": ["/dashboard/admin/anomalies"], "components": [], "entities_used": ["warning", "gps_event", "daily_entry"], "apis_used": ["anomaly_api"], "role_ownership": ["healthcare_admin", "super_admin"], "reusable_elements": ["anomaly_feed", "risk_tags"], "technical_debt": ["missing implementation"], "missing_features": ["signals and scoring"], "related_dashboards": ["healthcare_admin", "super_admin"], "related_workflows": ["wf_admin_revision_and_exports"]}
+    {
+      "id": "landing_page",
+      "purpose": "Marketing site and value communication",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/",
+        "/why-choose-us",
+        "/what-we-solve"
+      ],
+      "components": [
+        "LandingPage"
+      ],
+      "entities_used": [],
+      "apis_used": [],
+      "role_ownership": [
+        "public"
+      ],
+      "reusable_elements": [
+        "hero",
+        "feature_cards",
+        "cta"
+      ],
+      "technical_debt": [
+        "copy and analytics integrations pending"
+      ],
+      "missing_features": [
+        "deeper conversion copy and FAQ depth"
+      ],
+      "related_dashboards": [],
+      "related_workflows": [
+        "wf_landing_to_portal"
+      ]
+    },
+    {
+      "id": "auth",
+      "purpose": "Identity and session management",
+      "status": "implemented_mock",
+      "routes_pages": [
+        "/auth/login",
+        "/auth/forgot-password",
+        "/auth/reset-password"
+      ],
+      "components": [
+        "LoginPage",
+        "middleware",
+        "session_cookie_manager"
+      ],
+      "entities_used": [
+        "user",
+        "session"
+      ],
+      "apis_used": [
+        "auth_api"
+      ],
+      "role_ownership": [
+        "all_roles"
+      ],
+      "reusable_elements": [
+        "auth_form",
+        "guard"
+      ],
+      "technical_debt": [
+        "uses seeded credentials and unsigned cookie payload"
+      ],
+      "missing_features": [
+        "external identity provider",
+        "forgot/reset/invite/mfa-readiness"
+      ],
+      "related_dashboards": [
+        "all"
+      ],
+      "related_workflows": [
+        "wf_landing_to_portal"
+      ]
+    },
+    {
+      "id": "tenancy",
+      "purpose": "Agency scoping and tenant isolation",
+      "status": "implemented_mock",
+      "routes_pages": [
+        "/select-agency"
+      ],
+      "components": [
+        "SelectAgencyPage",
+        "session_agency_selector"
+      ],
+      "entities_used": [
+        "agency",
+        "role_assignment"
+      ],
+      "apis_used": [
+        "agency_api"
+      ],
+      "role_ownership": [
+        "all_roles"
+      ],
+      "reusable_elements": [
+        "agency_selector"
+      ],
+      "technical_debt": [
+        "agency data comes from mock scope list"
+      ],
+      "missing_features": [
+        "database-backed tenant policies",
+        "isolation enforcement"
+      ],
+      "related_dashboards": [
+        "all"
+      ],
+      "related_workflows": [
+        "wf_landing_to_portal"
+      ]
+    },
+    {
+      "id": "role_management",
+      "purpose": "Role selection and permission mapping",
+      "status": "implemented_mock",
+      "routes_pages": [
+        "/select-role"
+      ],
+      "components": [
+        "SelectRolePage",
+        "role_redirect_resolver"
+      ],
+      "entities_used": [
+        "role_assignment"
+      ],
+      "apis_used": [
+        "rbac_api"
+      ],
+      "role_ownership": [
+        "all_roles"
+      ],
+      "reusable_elements": [
+        "role_selector",
+        "route_guard"
+      ],
+      "technical_debt": [
+        "role checks are route-prefix based"
+      ],
+      "missing_features": [
+        "policy engine",
+        "permission matrix APIs"
+      ],
+      "related_dashboards": [
+        "all"
+      ],
+      "related_workflows": [
+        "wf_landing_to_portal"
+      ]
+    },
+    {
+      "id": "dashboards",
+      "purpose": "Role-based dashboard surfaces",
+      "status": "partially_implemented",
+      "routes_pages": [
+        "/dashboard/*",
+        "/portal/patient"
+      ],
+      "components": [
+        "DashboardShell",
+        "HealthcareAdminDashboardPage"
+      ],
+      "entities_used": [
+        "warning",
+        "weekly_form",
+        "schedule",
+        "patient"
+      ],
+      "apis_used": [
+        "dashboard_api",
+        "patient_api"
+      ],
+      "role_ownership": [
+        "super_admin",
+        "healthcare_admin",
+        "case_manager",
+        "caregiver",
+        "patient"
+      ],
+      "reusable_elements": [
+        "kpi_cards",
+        "action_panels",
+        "tables"
+      ],
+      "technical_debt": [
+        "non-admin dashboards remain placeholders"
+      ],
+      "missing_features": [
+        "case manager, caregiver, patient operational widgets"
+      ],
+      "related_dashboards": [
+        "super_admin",
+        "healthcare_admin",
+        "case_manager",
+        "caregiver",
+        "patient"
+      ],
+      "related_workflows": [
+        "wf_landing_to_portal",
+        "wf_caregiver_daily_visit",
+        "wf_patient_admission"
+      ]
+    },
+    {
+      "id": "patient_admission",
+      "purpose": "Create and activate patient records",
+      "status": "implemented_mvp",
+      "routes_pages": [
+        "/dashboard/admin/patients/new"
+      ],
+      "components": [
+        "PatientAdmissionPage",
+        "createPatientAction"
+      ],
+      "entities_used": [
+        "patient",
+        "patient_identifiers",
+        "patient_authorization",
+        "care_plan"
+      ],
+      "apis_used": [
+        "patient_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin"
+      ],
+      "reusable_elements": [
+        "patient_form",
+        "assignment_picker"
+      ],
+      "technical_debt": [
+        "in-memory storage",
+        "no authorization effective-date rule integration"
+      ],
+      "missing_features": [
+        "full wizard checkpoints",
+        "authorization policy engine",
+        "persistent repository"
+      ],
+      "related_dashboards": [
+        "healthcare_admin"
+      ],
+      "related_workflows": [
+        "wf_patient_admission"
+      ]
+    },
+    {
+      "id": "patient_management",
+      "purpose": "Patient lifecycle and reassignment",
+      "status": "implemented_mvp",
+      "routes_pages": [
+        "/dashboard/admin/patients",
+        "/dashboard/admin/patients/:id"
+      ],
+      "components": [
+        "AdminPatientsPage",
+        "PatientDetailPage"
+      ],
+      "entities_used": [
+        "patient",
+        "patient_caregiver_assignment",
+        "patient_case_manager_assignment"
+      ],
+      "apis_used": [
+        "patient_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "reusable_elements": [
+        "patient_table",
+        "history_panel"
+      ],
+      "technical_debt": [
+        "no reassignment history yet",
+        "no search/filter controls"
+      ],
+      "missing_features": [
+        "history timeline",
+        "staff reassignment",
+        "case manager scoped views"
+      ],
+      "related_dashboards": [
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "related_workflows": [
+        "wf_patient_admission"
+      ]
+    },
+    {
+      "id": "caregiver_management",
+      "purpose": "Caregiver record and agency mapping",
+      "status": "not_implemented",
+      "routes_pages": [
+        "/dashboard/admin/caregivers"
+      ],
+      "components": [],
+      "entities_used": [
+        "user",
+        "agency"
+      ],
+      "apis_used": [
+        "caregiver_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin"
+      ],
+      "reusable_elements": [
+        "staff_table"
+      ],
+      "technical_debt": [
+        "missing implementation"
+      ],
+      "missing_features": [
+        "crud and assignments"
+      ],
+      "related_dashboards": [
+        "healthcare_admin"
+      ],
+      "related_workflows": [
+        "wf_patient_admission"
+      ]
+    },
+    {
+      "id": "case_manager_management",
+      "purpose": "Case manager record and assignment support",
+      "status": "not_implemented",
+      "routes_pages": [
+        "/dashboard/admin/case-managers"
+      ],
+      "components": [],
+      "entities_used": [
+        "user",
+        "patient_case_manager_assignment"
+      ],
+      "apis_used": [
+        "case_manager_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin"
+      ],
+      "reusable_elements": [
+        "staff_table"
+      ],
+      "technical_debt": [
+        "missing implementation"
+      ],
+      "missing_features": [
+        "crud and assignments"
+      ],
+      "related_dashboards": [
+        "healthcare_admin"
+      ],
+      "related_workflows": [
+        "wf_patient_admission"
+      ]
+    },
+    {
+      "id": "patient_portal",
+      "purpose": "Patient-facing weekly signature and visibility",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/portal/patient"
+      ],
+      "components": [
+        "PatientPortalPage"
+      ],
+      "entities_used": [
+        "patient",
+        "weekly_form",
+        "signature",
+        "notification"
+      ],
+      "apis_used": [
+        "patient_portal_api"
+      ],
+      "role_ownership": [
+        "patient"
+      ],
+      "reusable_elements": [
+        "signature_prompt",
+        "notification_list"
+      ],
+      "technical_debt": [
+        "portal currently scaffold-only"
+      ],
+      "missing_features": [
+        "portal and signature tasks"
+      ],
+      "related_dashboards": [
+        "patient"
+      ],
+      "related_workflows": [
+        "wf_weekly_submission_and_signatures"
+      ]
+    },
+    {
+      "id": "scheduling",
+      "purpose": "Daily/recurring scheduling and visit calendar",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/admin/schedules",
+        "/dashboard/caregiver/schedule"
+      ],
+      "components": [],
+      "entities_used": [
+        "schedule",
+        "schedule_occurrence"
+      ],
+      "apis_used": [
+        "schedule_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "caregiver"
+      ],
+      "reusable_elements": [
+        "calendar",
+        "conflict_badges"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "recurrence and conflict engine"
+      ],
+      "related_dashboards": [
+        "healthcare_admin",
+        "caregiver"
+      ],
+      "related_workflows": [
+        "wf_caregiver_daily_visit"
+      ]
+    },
+    {
+      "id": "weekly_forms",
+      "purpose": "Weekly timesheet and daily entries",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/caregiver/week/:weekId"
+      ],
+      "components": [],
+      "entities_used": [
+        "weekly_form",
+        "daily_entry",
+        "time_entry"
+      ],
+      "apis_used": [
+        "timesheet_api"
+      ],
+      "role_ownership": [
+        "caregiver",
+        "healthcare_admin"
+      ],
+      "reusable_elements": [
+        "day_cards",
+        "weekly_totals"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "draft/save/submit/copy"
+      ],
+      "related_dashboards": [
+        "caregiver",
+        "healthcare_admin"
+      ],
+      "related_workflows": [
+        "wf_caregiver_daily_visit",
+        "wf_weekly_submission_and_signatures"
+      ]
+    },
+    {
+      "id": "daily_entries",
+      "purpose": "Per-day task completion and notes",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/caregiver/visits/:occurrenceId"
+      ],
+      "components": [],
+      "entities_used": [
+        "daily_entry",
+        "care_plan_task"
+      ],
+      "apis_used": [
+        "timesheet_api"
+      ],
+      "role_ownership": [
+        "caregiver"
+      ],
+      "reusable_elements": [
+        "task_checklist",
+        "notes_input"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "offline queue"
+      ],
+      "related_dashboards": [
+        "caregiver"
+      ],
+      "related_workflows": [
+        "wf_caregiver_daily_visit"
+      ]
+    },
+    {
+      "id": "signatures",
+      "purpose": "Hybrid weekly signatures",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/caregiver/week/:weekId/signatures",
+        "/portal/patient/signatures"
+      ],
+      "components": [],
+      "entities_used": [
+        "signature",
+        "weekly_form"
+      ],
+      "apis_used": [
+        "signature_api"
+      ],
+      "role_ownership": [
+        "caregiver",
+        "patient",
+        "healthcare_admin"
+      ],
+      "reusable_elements": [
+        "signature_pad",
+        "signature_status"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "hybrid flow and enforcement"
+      ],
+      "related_dashboards": [
+        "caregiver",
+        "patient",
+        "healthcare_admin"
+      ],
+      "related_workflows": [
+        "wf_weekly_submission_and_signatures"
+      ]
+    },
+    {
+      "id": "gps_evv",
+      "purpose": "Clock in/out location evidence",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/caregiver/visits/:occurrenceId"
+      ],
+      "components": [],
+      "entities_used": [
+        "gps_event",
+        "time_entry"
+      ],
+      "apis_used": [
+        "evv_api"
+      ],
+      "role_ownership": [
+        "caregiver",
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "reusable_elements": [
+        "clock_buttons",
+        "gps_status"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "offline fallback and confidence scoring"
+      ],
+      "related_dashboards": [
+        "caregiver",
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "related_workflows": [
+        "wf_caregiver_daily_visit"
+      ]
+    },
+    {
+      "id": "warnings_exceptions",
+      "purpose": "Warning generation and exception review",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/admin/exceptions",
+        "/dashboard/case-manager/exceptions"
+      ],
+      "components": [],
+      "entities_used": [
+        "warning",
+        "exception"
+      ],
+      "apis_used": [
+        "warning_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "reusable_elements": [
+        "exception_table",
+        "deep_link_resolver"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "engine and routing links"
+      ],
+      "related_dashboards": [
+        "healthcare_admin",
+        "case_manager",
+        "caregiver"
+      ],
+      "related_workflows": [
+        "wf_weekly_submission_and_signatures",
+        "wf_admin_revision_and_exports"
+      ]
+    },
+    {
+      "id": "revision_history",
+      "purpose": "Immutable submission revisions and audit trail",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/admin/revisions"
+      ],
+      "components": [],
+      "entities_used": [
+        "revision",
+        "weekly_form"
+      ],
+      "apis_used": [
+        "revision_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "reusable_elements": [
+        "diff_viewer",
+        "change_timeline"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "revision compare"
+      ],
+      "related_dashboards": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "related_workflows": [
+        "wf_admin_revision_and_exports"
+      ]
+    },
+    {
+      "id": "form_builder",
+      "purpose": "Template and payer-specific form configuration",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/admin/form-builder"
+      ],
+      "components": [],
+      "entities_used": [
+        "form_template",
+        "form_template_version"
+      ],
+      "apis_used": [
+        "form_builder_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin"
+      ],
+      "reusable_elements": [
+        "field_palette",
+        "layout_preview"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "versioned templates and assignment"
+      ],
+      "related_dashboards": [
+        "healthcare_admin"
+      ],
+      "related_workflows": [
+        "wf_patient_admission"
+      ]
+    },
+    {
+      "id": "printable_pdf_export",
+      "purpose": "Paper-like export output",
+      "status": "not_implemented",
+      "routes_pages": [
+        "/dashboard/admin/print-preview"
+      ],
+      "components": [],
+      "entities_used": [
+        "weekly_form",
+        "signature"
+      ],
+      "apis_used": [
+        "pdf_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "reusable_elements": [
+        "print_layout",
+        "signature_blocks"
+      ],
+      "technical_debt": [
+        "missing implementation"
+      ],
+      "missing_features": [
+        "payer-specific layout"
+      ],
+      "related_dashboards": [
+        "healthcare_admin"
+      ],
+      "related_workflows": [
+        "wf_admin_revision_and_exports"
+      ]
+    },
+    {
+      "id": "reports",
+      "purpose": "Operational and financial KPI reporting",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/admin/reports",
+        "/dashboard/super-admin/reports"
+      ],
+      "components": [],
+      "entities_used": [
+        "report_definition",
+        "payroll_line_item",
+        "billing_line_item",
+        "warning"
+      ],
+      "apis_used": [
+        "report_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "reusable_elements": [
+        "kpi_tiles",
+        "trend_charts",
+        "filters"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "all required report sets"
+      ],
+      "related_dashboards": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "related_workflows": [
+        "wf_admin_revision_and_exports"
+      ]
+    },
+    {
+      "id": "import_export",
+      "purpose": "File center, jobs, and status tracking",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/admin/file-center",
+        "/dashboard/admin/exports"
+      ],
+      "components": [],
+      "entities_used": [
+        "import_job",
+        "export_job",
+        "parser_job"
+      ],
+      "apis_used": [
+        "file_center_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "reusable_elements": [
+        "job_table",
+        "upload_dropzone"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "job orchestration"
+      ],
+      "related_dashboards": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "related_workflows": [
+        "wf_admin_revision_and_exports"
+      ]
+    },
+    {
+      "id": "parser",
+      "purpose": "Template/data parsing",
+      "status": "not_implemented",
+      "routes_pages": [
+        "/dashboard/admin/file-center/parser"
+      ],
+      "components": [],
+      "entities_used": [
+        "parser_job"
+      ],
+      "apis_used": [
+        "parser_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "reusable_elements": [
+        "mapping_ui",
+        "preview_grid"
+      ],
+      "technical_debt": [
+        "missing implementation"
+      ],
+      "missing_features": [
+        "mapping and validation"
+      ],
+      "related_dashboards": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "related_workflows": [
+        "wf_admin_revision_and_exports"
+      ]
+    },
+    {
+      "id": "payroll",
+      "purpose": "Payable line item generation",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/admin/payroll"
+      ],
+      "components": [],
+      "entities_used": [
+        "payroll_rule",
+        "payroll_line_item"
+      ],
+      "apis_used": [
+        "payroll_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "reusable_elements": [
+        "payroll_table",
+        "approval_panel"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "rule engine and exports"
+      ],
+      "related_dashboards": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "related_workflows": [
+        "wf_admin_revision_and_exports"
+      ]
+    },
+    {
+      "id": "billing",
+      "purpose": "Billing-ready line item generation",
+      "status": "scaffolded_foundation",
+      "routes_pages": [
+        "/dashboard/admin/billing"
+      ],
+      "components": [],
+      "entities_used": [
+        "billing_rule",
+        "billing_line_item"
+      ],
+      "apis_used": [
+        "billing_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "reusable_elements": [
+        "billing_table",
+        "service_code_mapper"
+      ],
+      "technical_debt": [
+        "route scaffolds are present but business logic/data integration is not implemented"
+      ],
+      "missing_features": [
+        "payer modes and exports"
+      ],
+      "related_dashboards": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "related_workflows": [
+        "wf_admin_revision_and_exports"
+      ]
+    },
+    {
+      "id": "notification_system",
+      "purpose": "Reminder and assignment notifications",
+      "status": "not_implemented",
+      "routes_pages": [
+        "/dashboard/*/notifications"
+      ],
+      "components": [],
+      "entities_used": [
+        "notification",
+        "warning"
+      ],
+      "apis_used": [
+        "notification_api"
+      ],
+      "role_ownership": [
+        "all_roles"
+      ],
+      "reusable_elements": [
+        "notification_center",
+        "badge_counts"
+      ],
+      "technical_debt": [
+        "missing implementation"
+      ],
+      "missing_features": [
+        "delivery channels and preferences"
+      ],
+      "related_dashboards": [
+        "all"
+      ],
+      "related_workflows": [
+        "wf_weekly_submission_and_signatures",
+        "wf_admin_revision_and_exports"
+      ]
+    },
+    {
+      "id": "fraud_anomaly_hooks",
+      "purpose": "Anomaly detection readiness points",
+      "status": "not_implemented",
+      "routes_pages": [
+        "/dashboard/admin/anomalies"
+      ],
+      "components": [],
+      "entities_used": [
+        "warning",
+        "gps_event",
+        "daily_entry"
+      ],
+      "apis_used": [
+        "anomaly_api"
+      ],
+      "role_ownership": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "reusable_elements": [
+        "anomaly_feed",
+        "risk_tags"
+      ],
+      "technical_debt": [
+        "missing implementation"
+      ],
+      "missing_features": [
+        "signals and scoring"
+      ],
+      "related_dashboards": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "related_workflows": [
+        "wf_admin_revision_and_exports"
+      ]
+    }
   ]
 }

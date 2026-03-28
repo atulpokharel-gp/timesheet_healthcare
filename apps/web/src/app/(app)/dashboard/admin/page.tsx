@@ -38,6 +38,39 @@ export default async function HealthcareAdminDashboardPage() {
           >
             Admit New Patient
           </Link>
+          <Link href="/dashboard/admin/assignments" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Assignments
+          </Link>
+          <Link href="/dashboard/admin/authorizations" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Authorization Rules
+          </Link>
+          <Link href="/dashboard/admin/scheduling" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Scheduling
+          </Link>
+          <Link href="/dashboard/admin/submissions" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Weekly Submissions
+          </Link>
+          <Link href="/dashboard/admin/exceptions" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Exceptions
+          </Link>
+          <Link href="/dashboard/admin/form-builder" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Form Builder
+          </Link>
+          <Link href="/dashboard/admin/reports" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Reports
+          </Link>
+          <Link href="/dashboard/admin/file-center" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Import / Export
+          </Link>
+          <Link href="/dashboard/admin/billing" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Billing Outputs
+          </Link>
+          <Link href="/dashboard/admin/payroll" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Payroll Outputs
+          </Link>
+          <Link href="/dashboard/admin/exports" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+            Exports
+          </Link>
         </div>
       </section>
     </main>

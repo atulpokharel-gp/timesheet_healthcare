@@ -1,98 +1,362 @@
 {
   "metadata": {
-    "version": "0.4.0-pw003-admission-m1",
-    "last_updated": "2026-03-28T03:00:00Z"
+    "version": "0.5.0-pw003-route-surface-m2",
+    "last_updated": "2026-03-28T09:58:00Z"
   },
   "dashboards": [
     {
       "id": "super_admin",
       "route": "/dashboard/super-admin",
-      "role_permissions": ["platform-wide visibility", "agency management", "subscription/usage oversight"],
-      "widgets": ["tenant_health", "active_agencies", "platform_exceptions", "usage_summary"],
-      "data_cards": ["agency_count", "total_users", "system_alerts"],
-      "actions": ["create_agency", "manage_global_settings", "view_reports"],
-      "table_views": ["agencies_table", "high_risk_events"],
-      "filters": ["agency", "date_range", "risk_level"],
-      "linked_modules": ["dashboards", "tenancy", "reports", "import_export", "fraud_anomaly_hooks"],
-      "linked_entities": ["agency", "warning", "report_definition", "notification"],
-      "missing_states": ["data_integration_pending", "kpi_query_pending"],
-      "empty_states": ["no_agencies", "no_alerts"],
-      "warning_surfaces": ["platform_exceptions", "security_events"],
-      "workflow_entry_points": ["wf_admin_revision_and_exports"],
-      "dependency_risks": ["tenant visibility boundaries still rely on mock session source"],
+      "role_permissions": [
+        "platform-wide visibility",
+        "agency management",
+        "subscription/usage oversight"
+      ],
+      "widgets": [
+        "tenant_health",
+        "active_agencies",
+        "platform_exceptions",
+        "usage_summary"
+      ],
+      "data_cards": [
+        "agency_count",
+        "total_users",
+        "system_alerts"
+      ],
+      "actions": [
+        "create_agency",
+        "manage_global_settings",
+        "view_reports"
+      ],
+      "table_views": [
+        "agencies_table",
+        "high_risk_events"
+      ],
+      "filters": [
+        "agency",
+        "date_range",
+        "risk_level"
+      ],
+      "linked_modules": [
+        "dashboards",
+        "tenancy",
+        "reports",
+        "import_export",
+        "fraud_anomaly_hooks"
+      ],
+      "linked_entities": [
+        "agency",
+        "warning",
+        "report_definition",
+        "notification"
+      ],
+      "missing_states": [
+        "data_integration_pending",
+        "kpi_query_pending"
+      ],
+      "empty_states": [
+        "no_agencies",
+        "no_alerts"
+      ],
+      "warning_surfaces": [
+        "platform_exceptions",
+        "security_events"
+      ],
+      "workflow_entry_points": [
+        "wf_admin_revision_and_exports"
+      ],
+      "dependency_risks": [
+        "tenant visibility boundaries still rely on mock session source"
+      ],
       "status": "scaffolded_foundation"
     },
     {
       "id": "healthcare_admin",
       "route": "/dashboard/admin",
-      "role_permissions": ["agency-level full operations"],
-      "widgets": ["pending_submissions", "missing_signatures", "exceptions", "hours_summary", "billing_payroll_readiness"],
-      "data_cards": ["patients_total", "caregivers_active", "case_managers_assigned", "open_warnings"],
-      "actions": ["admit_patient", "assign_staff", "build_form", "review_submissions", "run_exports"],
-      "table_views": ["patient_grid", "submission_queue", "exception_queue", "schedule_table"],
-      "filters": ["patient", "caregiver", "payer", "week", "exception_status"],
-      "linked_modules": ["dashboards", "patient_admission", "patient_management", "scheduling", "weekly_forms", "warnings_exceptions", "revision_history", "form_builder", "payroll", "billing", "reports", "import_export"],
-      "linked_entities": ["patient", "weekly_form", "warning", "exception", "revision", "payroll_line_item", "billing_line_item"],
-      "missing_states": ["assignment_directory_pending", "authorization_policy_checks_pending"],
-      "empty_states": ["no_submissions", "no_exceptions", "no_patients"],
-      "warning_surfaces": ["missing_signatures", "gps_mismatch", "over_authorized_hours", "admin_edit_after_submission"],
-      "workflow_entry_points": ["wf_patient_admission", "wf_admin_revision_and_exports"],
-      "dependency_risks": ["high cross-module coupling without shared contracts", "auth still mock-backed", "patient registry currently in-memory"],
+      "role_permissions": [
+        "agency-level full operations"
+      ],
+      "widgets": [
+        "pending_submissions",
+        "missing_signatures",
+        "exceptions",
+        "hours_summary",
+        "billing_payroll_readiness"
+      ],
+      "data_cards": [
+        "patients_total",
+        "caregivers_active",
+        "case_managers_assigned",
+        "open_warnings"
+      ],
+      "actions": [
+        "admit_patient",
+        "assign_staff",
+        "build_form",
+        "review_submissions",
+        "run_exports"
+      ],
+      "table_views": [
+        "patient_grid",
+        "submission_queue",
+        "exception_queue",
+        "schedule_table"
+      ],
+      "filters": [
+        "patient",
+        "caregiver",
+        "payer",
+        "week",
+        "exception_status"
+      ],
+      "linked_modules": [
+        "dashboards",
+        "patient_admission",
+        "patient_management",
+        "scheduling",
+        "weekly_forms",
+        "warnings_exceptions",
+        "revision_history",
+        "form_builder",
+        "payroll",
+        "billing",
+        "reports",
+        "import_export"
+      ],
+      "linked_entities": [
+        "patient",
+        "weekly_form",
+        "warning",
+        "exception",
+        "revision",
+        "payroll_line_item",
+        "billing_line_item"
+      ],
+      "missing_states": [
+        "workflow_query_integration_pending",
+        "assignment_directory_pending",
+        "authorization_policy_checks_pending"
+      ],
+      "empty_states": [
+        "no_submissions",
+        "no_exceptions",
+        "no_patients"
+      ],
+      "warning_surfaces": [
+        "missing_signatures",
+        "gps_mismatch",
+        "over_authorized_hours",
+        "admin_edit_after_submission"
+      ],
+      "workflow_entry_points": [
+        "wf_patient_admission",
+        "wf_admin_revision_and_exports"
+      ],
+      "dependency_risks": [
+        "high cross-module coupling without shared contracts",
+        "auth still mock-backed",
+        "patient registry currently in-memory"
+      ],
       "status": "partially_implemented"
     },
     {
       "id": "case_manager",
       "route": "/dashboard/case-manager",
-      "role_permissions": ["assigned patient review", "exception review", "care continuity oversight"],
-      "widgets": ["assigned_patients", "open_exceptions", "care_gap_alerts"],
-      "data_cards": ["patients_assigned", "exceptions_open", "exceptions_resolved"],
-      "actions": ["open_exception", "add_resolution_note", "review_patient_timeline"],
-      "table_views": ["assigned_patient_table", "exception_table"],
-      "filters": ["patient", "severity", "status", "week"],
-      "linked_modules": ["dashboards", "patient_management", "warnings_exceptions", "revision_history"],
-      "linked_entities": ["patient", "warning", "exception", "revision"],
-      "missing_states": ["data_integration_pending", "exception_queries_pending"],
-      "empty_states": ["no_assigned_patients", "no_exceptions"],
-      "warning_surfaces": ["exception_queue"],
-      "workflow_entry_points": ["wf_weekly_submission_and_signatures"],
-      "dependency_risks": ["exception deep links not implemented", "auth still mock-backed"],
-      "status": "scaffolded_foundation"
+      "role_permissions": [
+        "assigned patient review",
+        "exception review",
+        "care continuity oversight"
+      ],
+      "widgets": [
+        "assigned_patients",
+        "open_exceptions",
+        "care_gap_alerts"
+      ],
+      "data_cards": [
+        "patients_assigned",
+        "exceptions_open",
+        "exceptions_resolved"
+      ],
+      "actions": [
+        "open_exception",
+        "add_resolution_note",
+        "review_patient_timeline"
+      ],
+      "table_views": [
+        "assigned_patient_table",
+        "exception_table"
+      ],
+      "filters": [
+        "patient",
+        "severity",
+        "status",
+        "week"
+      ],
+      "linked_modules": [
+        "dashboards",
+        "patient_management",
+        "warnings_exceptions",
+        "revision_history"
+      ],
+      "linked_entities": [
+        "patient",
+        "warning",
+        "exception",
+        "revision"
+      ],
+      "missing_states": [
+        "exception_queue_query_pending",
+        "review_actions_pending"
+      ],
+      "empty_states": [
+        "no_assigned_patients",
+        "no_exceptions"
+      ],
+      "warning_surfaces": [
+        "exception_queue"
+      ],
+      "workflow_entry_points": [
+        "wf_weekly_submission_and_signatures"
+      ],
+      "dependency_risks": [
+        "exception deep links not implemented",
+        "auth still mock-backed"
+      ],
+      "status": "partially_implemented"
     },
     {
       "id": "caregiver",
       "route": "/dashboard/caregiver",
-      "role_permissions": ["visit execution", "daily drafts", "weekly submission", "signature capture"],
-      "widgets": ["today_visits", "week_progress", "draft_status", "warnings_preview"],
-      "data_cards": ["today_hours", "week_hours", "pending_signatures", "sync_status"],
-      "actions": ["start_visit", "clock_in", "clock_out", "save_draft", "copy_previous_day", "copy_previous_week", "submit_week"],
-      "table_views": ["visit_list"],
-      "filters": ["day", "week", "patient"],
-      "linked_modules": ["dashboards", "scheduling", "daily_entries", "weekly_forms", "gps_evv", "signatures", "warnings_exceptions"],
-      "linked_entities": ["schedule_occurrence", "daily_entry", "weekly_form", "gps_event", "signature", "warning"],
-      "missing_states": ["data_integration_pending", "mobile_actions_pending"],
-      "empty_states": ["no_visits_today", "no_assigned_patients"],
-      "warning_surfaces": ["weekly_validation_banner", "daily_form_inline_warnings"],
-      "workflow_entry_points": ["wf_caregiver_daily_visit", "wf_weekly_submission_and_signatures"],
-      "dependency_risks": ["mobile UX and offline sync design not implemented", "auth still mock-backed"],
-      "status": "scaffolded_foundation"
+      "role_permissions": [
+        "visit execution",
+        "daily drafts",
+        "weekly submission",
+        "signature capture"
+      ],
+      "widgets": [
+        "today_visits",
+        "week_progress",
+        "draft_status",
+        "warnings_preview"
+      ],
+      "data_cards": [
+        "today_hours",
+        "week_hours",
+        "pending_signatures",
+        "sync_status"
+      ],
+      "actions": [
+        "start_visit",
+        "clock_in",
+        "clock_out",
+        "save_draft",
+        "copy_previous_day",
+        "copy_previous_week",
+        "submit_week"
+      ],
+      "table_views": [
+        "visit_list"
+      ],
+      "filters": [
+        "day",
+        "week",
+        "patient"
+      ],
+      "linked_modules": [
+        "dashboards",
+        "scheduling",
+        "daily_entries",
+        "weekly_forms",
+        "gps_evv",
+        "signatures",
+        "warnings_exceptions"
+      ],
+      "linked_entities": [
+        "schedule_occurrence",
+        "daily_entry",
+        "weekly_form",
+        "gps_event",
+        "signature",
+        "warning"
+      ],
+      "missing_states": [
+        "daily_and_weekly_data_queries_pending",
+        "mobile_actions_pending"
+      ],
+      "empty_states": [
+        "no_visits_today",
+        "no_assigned_patients"
+      ],
+      "warning_surfaces": [
+        "weekly_validation_banner",
+        "daily_form_inline_warnings"
+      ],
+      "workflow_entry_points": [
+        "wf_caregiver_daily_visit",
+        "wf_weekly_submission_and_signatures"
+      ],
+      "dependency_risks": [
+        "mobile UX and offline sync design not implemented",
+        "auth still mock-backed"
+      ],
+      "status": "partially_implemented"
     },
     {
       "id": "patient",
       "route": "/portal/patient",
-      "role_permissions": ["weekly signature", "allowed-record visibility"],
-      "widgets": ["signature_tasks", "recent_visits", "notifications"],
-      "data_cards": ["pending_signatures", "caregiver_visits_week"],
-      "actions": ["sign_weekly_form", "view_notification"],
-      "table_views": ["visit_records"],
-      "filters": ["week", "status"],
-      "linked_modules": ["patient_portal", "signatures", "notification_system"],
-      "linked_entities": ["patient", "weekly_form", "signature", "notification"],
-      "missing_states": ["data_integration_pending", "signature_task_queries_pending"],
-      "empty_states": ["no_signature_required", "no_notifications"],
-      "warning_surfaces": ["pending_signature_banner"],
-      "workflow_entry_points": ["wf_weekly_submission_and_signatures"],
-      "dependency_risks": ["portal access boundaries rely on mock session source"],
-      "status": "scaffolded_foundation"
+      "role_permissions": [
+        "weekly signature",
+        "allowed-record visibility"
+      ],
+      "widgets": [
+        "signature_tasks",
+        "recent_visits",
+        "notifications"
+      ],
+      "data_cards": [
+        "pending_signatures",
+        "caregiver_visits_week"
+      ],
+      "actions": [
+        "sign_weekly_form",
+        "view_notification"
+      ],
+      "table_views": [
+        "visit_records"
+      ],
+      "filters": [
+        "week",
+        "status"
+      ],
+      "linked_modules": [
+        "patient_portal",
+        "signatures",
+        "notification_system"
+      ],
+      "linked_entities": [
+        "patient",
+        "weekly_form",
+        "signature",
+        "notification"
+      ],
+      "missing_states": [
+        "signature_task_queries_pending",
+        "patient_notification_queries_pending"
+      ],
+      "empty_states": [
+        "no_signature_required",
+        "no_notifications"
+      ],
+      "warning_surfaces": [
+        "pending_signature_banner"
+      ],
+      "workflow_entry_points": [
+        "wf_weekly_submission_and_signatures"
+      ],
+      "dependency_risks": [
+        "portal access boundaries rely on mock session source"
+      ],
+      "status": "partially_implemented"
     }
   ]
 }
