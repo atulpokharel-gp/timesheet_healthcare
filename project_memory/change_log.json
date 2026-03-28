@@ -1,9 +1,208 @@
 {
   "metadata": {
-    "version": "0.4.0-pw003-admission-m1",
-    "last_updated": "2026-03-28T03:00:00Z"
+    "version": "0.5.2-pw003-route-surface-m2b",
+    "last_updated": "2026-03-28T10:10:00Z"
   },
   "entries": [
+    {
+      "timestamp": "2026-03-28T10:10:00Z",
+      "task_title": "Clarify caregiver route placeholders",
+      "what_changed": [
+        "Renamed caregiver dashboard placeholder route ids to explicit example-occurrence-id and example-week-id values.",
+        "Refreshed memory metadata timestamps."
+      ],
+      "why_it_changed": "Reduce ambiguity while preserving scaffold behavior and dynamic route expectations.",
+      "affected_files": [
+        "apps/web/src/app/(app)/dashboard/caregiver/page.tsx",
+        "project_memory/*.json"
+      ],
+      "affected_modules": [
+        "dashboards",
+        "daily_entries",
+        "weekly_forms"
+      ],
+      "affected_dashboards": [
+        "caregiver"
+      ],
+      "impacted_workflows": [
+        "wf_caregiver_daily_visit",
+        "wf_weekly_submission_and_signatures"
+      ],
+      "impacted_entities": [
+        "schedule_occurrence",
+        "weekly_form"
+      ],
+      "memory_files_updated": [
+        "app_graph.json",
+        "workflow_map.json",
+        "module_registry.json",
+        "dashboard_registry.json",
+        "shared_data_contracts.json",
+        "pending_work.json",
+        "change_log.json",
+        "feature_decisions.json",
+        "route_map.json",
+        "dependency_impact_map.json"
+      ],
+      "follow_up_tasks": [
+        "bind real identifiers from scheduling and weekly-form data queries"
+      ]
+    },
+    {
+      "timestamp": "2026-03-28T10:06:00Z",
+      "task_title": "Align caregiver dashboard links with parameterized visit/week routes",
+      "what_changed": [
+        "Updated caregiver dashboard links to use parameterized route examples for daily visit and weekly submission pages.",
+        "Refreshed project memory metadata timestamps after this meaningful adjustment."
+      ],
+      "why_it_changed": "Ensure dashboard entry points match the modeled dynamic route patterns and avoid broken/non-existent links.",
+      "affected_files": [
+        "apps/web/src/app/(app)/dashboard/caregiver/page.tsx",
+        "project_memory/app_graph.json",
+        "project_memory/workflow_map.json",
+        "project_memory/module_registry.json",
+        "project_memory/dashboard_registry.json",
+        "project_memory/shared_data_contracts.json",
+        "project_memory/pending_work.json",
+        "project_memory/change_log.json",
+        "project_memory/feature_decisions.json",
+        "project_memory/route_map.json",
+        "project_memory/dependency_impact_map.json"
+      ],
+      "affected_modules": [
+        "dashboards",
+        "daily_entries",
+        "weekly_forms"
+      ],
+      "affected_dashboards": [
+        "caregiver"
+      ],
+      "impacted_workflows": [
+        "wf_caregiver_daily_visit",
+        "wf_weekly_submission_and_signatures"
+      ],
+      "impacted_entities": [
+        "schedule_occurrence",
+        "weekly_form"
+      ],
+      "memory_files_updated": [
+        "app_graph.json",
+        "workflow_map.json",
+        "module_registry.json",
+        "dashboard_registry.json",
+        "shared_data_contracts.json",
+        "pending_work.json",
+        "change_log.json",
+        "feature_decisions.json",
+        "route_map.json",
+        "dependency_impact_map.json"
+      ],
+      "follow_up_tasks": [
+        "replace placeholder route parameters with real IDs from scheduling/weekly form data queries"
+      ]
+    },
+    {
+      "timestamp": "2026-03-28T09:58:00Z",
+      "task_title": "PW-003 milestone 2: scaffold connected required workflow routes and dashboards",
+      "what_changed": [
+        "Added landing-page support routes for why-choose-us and what-we-solve and linked them from the public landing page.",
+        "Added guarded scaffold routes for healthcare admin operations, caregiver visit/week flows, case manager exception queue, and patient signature tasks.",
+        "Enhanced role dashboards with direct links to workflow entry points and updated module boundaries for newly connected surfaces.",
+        "Updated all project_memory files to reflect route, workflow, module, dashboard, and dependency impact changes."
+      ],
+      "why_it_changed": "Ensure the requested end-to-end healthcare SaaS surface is fully mapped and route-connected before deeper module logic is implemented.",
+      "affected_files": [
+        "apps/web/src/app/(public)/page.tsx",
+        "apps/web/src/app/(public)/why-choose-us/page.tsx",
+        "apps/web/src/app/(public)/what-we-solve/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/assignments/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/authorizations/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/scheduling/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/exceptions/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/submissions/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/form-builder/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/reports/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/file-center/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/billing/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/payroll/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/exports/page.tsx",
+        "apps/web/src/app/(app)/dashboard/caregiver/page.tsx",
+        "apps/web/src/app/(app)/dashboard/caregiver/visits/[occurrenceId]/page.tsx",
+        "apps/web/src/app/(app)/dashboard/caregiver/week/[weekId]/page.tsx",
+        "apps/web/src/app/(app)/dashboard/case-manager/page.tsx",
+        "apps/web/src/app/(app)/dashboard/case-manager/exceptions/page.tsx",
+        "apps/web/src/app/(app)/portal/patient/page.tsx",
+        "apps/web/src/app/(app)/portal/patient/signatures/page.tsx",
+        "apps/web/src/modules/module-boundaries.ts",
+        "project_memory/app_graph.json",
+        "project_memory/workflow_map.json",
+        "project_memory/module_registry.json",
+        "project_memory/dashboard_registry.json",
+        "project_memory/shared_data_contracts.json",
+        "project_memory/pending_work.json",
+        "project_memory/change_log.json",
+        "project_memory/feature_decisions.json",
+        "project_memory/route_map.json",
+        "project_memory/dependency_impact_map.json"
+      ],
+      "affected_modules": [
+        "landing_page",
+        "dashboards",
+        "scheduling",
+        "weekly_forms",
+        "daily_entries",
+        "signatures",
+        "warnings_exceptions",
+        "reports",
+        "import_export",
+        "billing",
+        "payroll",
+        "form_builder",
+        "revision_history",
+        "patient_portal"
+      ],
+      "affected_dashboards": [
+        "healthcare_admin",
+        "caregiver",
+        "case_manager",
+        "patient"
+      ],
+      "impacted_workflows": [
+        "wf_landing_to_portal",
+        "wf_caregiver_daily_visit",
+        "wf_weekly_submission_and_signatures",
+        "wf_admin_revision_and_exports"
+      ],
+      "impacted_entities": [
+        "weekly_form",
+        "daily_entry",
+        "signature",
+        "warning",
+        "exception",
+        "revision",
+        "billing_line_item",
+        "payroll_line_item",
+        "export_job"
+      ],
+      "memory_files_updated": [
+        "app_graph.json",
+        "workflow_map.json",
+        "module_registry.json",
+        "dashboard_registry.json",
+        "shared_data_contracts.json",
+        "pending_work.json",
+        "change_log.json",
+        "feature_decisions.json",
+        "route_map.json",
+        "dependency_impact_map.json"
+      ],
+      "follow_up_tasks": [
+        "implement route-level business logic and persistence",
+        "add tests for route continuity and role access",
+        "implement warning, signature, revision, and export engines"
+      ]
+    },
     {
       "timestamp": "2026-03-28T03:00:00Z",
       "task_title": "PW-003 milestone 1: healthcare admin patient admission MVP",

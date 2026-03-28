@@ -20,7 +20,13 @@ export default function LandingPage() {
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-20 pt-10">
       <header className="flex items-center justify-between py-4">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-teal">Timesheet Healthcare</p>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
+          <Link href="/why-choose-us" className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">
+            Why Choose Us
+          </Link>
+          <Link href="/what-we-solve" className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">
+            What We Solve
+          </Link>
           <Link href="/auth/login" className="rounded-full border border-brand-ink px-4 py-2 text-sm font-medium">
             Login
           </Link>

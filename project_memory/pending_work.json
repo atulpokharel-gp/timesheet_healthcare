@@ -1,106 +1,253 @@
 {
   "metadata": {
-    "version": "0.4.0-pw003-admission-m1",
-    "last_updated": "2026-03-28T03:00:00Z"
+    "version": "0.5.2-pw003-route-surface-m2b",
+    "last_updated": "2026-03-28T10:10:00Z"
   },
   "items": [
     {
       "id": "PW-001",
       "title": "Scaffold Next.js TypeScript platform",
       "description": "Create application foundation with app router, Tailwind, linting, and testing baseline.",
-      "affected_modules": ["landing_page", "auth", "tenancy", "role_management", "dashboards"],
-      "affected_dashboards": ["super_admin", "healthcare_admin", "case_manager", "caregiver", "patient"],
-      "affected_workflows": ["wf_landing_to_portal"],
+      "affected_modules": [
+        "landing_page",
+        "auth",
+        "tenancy",
+        "role_management",
+        "dashboards"
+      ],
+      "affected_dashboards": [
+        "super_admin",
+        "healthcare_admin",
+        "case_manager",
+        "caregiver",
+        "patient"
+      ],
+      "affected_workflows": [
+        "wf_landing_to_portal"
+      ],
       "priority": "critical",
       "status": "completed",
-      "dependencies": ["memory_baseline_complete"],
+      "dependencies": [
+        "memory_baseline_complete"
+      ],
       "proposed_solution": "Initialize Next.js app with typed module boundaries and route groups for auth/dashboard/portal.",
-      "blockers": ["terminal-based dependency installation unavailable in this session"],
-      "follow_up_steps": ["run npm install in apps/web", "run lint/typecheck/build", "add CI baseline"]
+      "blockers": [
+        "terminal-based dependency installation unavailable in this session"
+      ],
+      "follow_up_steps": [
+        "run npm install in apps/web",
+        "run lint/typecheck/build",
+        "add CI baseline"
+      ]
     },
     {
       "id": "PW-002",
       "title": "Implement auth + tenant + role routing",
       "description": "Build login, session, agency selector, and role selector with protected routes.",
-      "affected_modules": ["auth", "tenancy", "role_management", "dashboards"],
-      "affected_dashboards": ["super_admin", "healthcare_admin", "case_manager", "caregiver", "patient"],
-      "affected_workflows": ["wf_landing_to_portal"],
+      "affected_modules": [
+        "auth",
+        "tenancy",
+        "role_management",
+        "dashboards"
+      ],
+      "affected_dashboards": [
+        "super_admin",
+        "healthcare_admin",
+        "case_manager",
+        "caregiver",
+        "patient"
+      ],
+      "affected_workflows": [
+        "wf_landing_to_portal"
+      ],
       "priority": "critical",
       "status": "completed",
-      "dependencies": ["PW-001"],
+      "dependencies": [
+        "PW-001"
+      ],
       "proposed_solution": "Use middleware plus server actions with tenant/role scoped session context.",
-      "blockers": ["production identity provider and signed session strategy pending"],
-      "follow_up_steps": ["integrate real auth provider", "replace unsigned cookie payload", "test redirect matrix"]
+      "blockers": [
+        "production identity provider and signed session strategy pending"
+      ],
+      "follow_up_steps": [
+        "integrate real auth provider",
+        "replace unsigned cookie payload",
+        "test redirect matrix"
+      ]
     },
     {
       "id": "PW-003",
       "title": "Build healthcare admin operational core",
       "description": "Patient admission, assignments, schedule creation, and admin dashboard basics.",
-      "affected_modules": ["patient_admission", "patient_management", "caregiver_management", "case_manager_management", "scheduling", "dashboards"],
-      "affected_dashboards": ["healthcare_admin"],
-      "affected_workflows": ["wf_patient_admission"],
+      "affected_modules": [
+        "patient_admission",
+        "patient_management",
+        "caregiver_management",
+        "case_manager_management",
+        "scheduling",
+        "dashboards"
+      ],
+      "affected_dashboards": [
+        "healthcare_admin"
+      ],
+      "affected_workflows": [
+        "wf_patient_admission"
+      ],
       "priority": "critical",
       "status": "in_progress",
-      "dependencies": ["PW-001", "PW-002"],
+      "dependencies": [
+        "PW-001",
+        "PW-002"
+      ],
       "proposed_solution": "Wizard-based admission flow with assignment tables and schedule recurrence editor.",
-      "blockers": ["data layer is currently in-memory only", "authorization and schedule modules still scaffolded"],
-      "follow_up_steps": ["replace in-memory patient store with persistent data layer", "add assignment directory integration", "implement schedule template to schedule engine handoff", "add admission list filters and search"]
+      "blockers": [
+        "data layer is currently in-memory only",
+        "authorization and schedule modules still scaffolded"
+      ],
+      "follow_up_steps": [
+        "replace in-memory patient store with persistent data layer",
+        "add assignment directory integration",
+        "implement schedule template to schedule engine handoff",
+        "add admission list filters and search"
+      ]
     },
     {
       "id": "PW-004",
       "title": "Implement caregiver daily and weekly flow",
       "description": "Mobile-first visit execution with draft save, copy actions, signatures, and weekly submit.",
-      "affected_modules": ["dashboards", "daily_entries", "weekly_forms", "signatures", "gps_evv", "warnings_exceptions"],
-      "affected_dashboards": ["caregiver", "patient", "healthcare_admin", "case_manager"],
-      "affected_workflows": ["wf_caregiver_daily_visit", "wf_weekly_submission_and_signatures"],
+      "affected_modules": [
+        "dashboards",
+        "daily_entries",
+        "weekly_forms",
+        "signatures",
+        "gps_evv",
+        "warnings_exceptions"
+      ],
+      "affected_dashboards": [
+        "caregiver",
+        "patient",
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "affected_workflows": [
+        "wf_caregiver_daily_visit",
+        "wf_weekly_submission_and_signatures"
+      ],
       "priority": "critical",
-      "status": "not_started",
-      "dependencies": ["PW-002", "PW-003"],
+      "status": "in_progress",
+      "dependencies": [
+        "PW-002",
+        "PW-003"
+      ],
       "proposed_solution": "Offline-tolerant draft model with pre-submit validation and warning deep links.",
-      "blockers": ["offline strategy not finalized"],
-      "follow_up_steps": ["copy policy guards", "signature capture components", "clock/GPS integration"]
+      "blockers": [
+        "workflow engines and APIs are not implemented behind newly scaffolded routes"
+      ],
+      "follow_up_steps": [
+        "implement daily draft persistence and weekly submit state transitions",
+        "enforce copy policy guards that exclude signatures and GPS data",
+        "implement caregiver and patient signature capture with verification",
+        "implement clock/GPS integration and warning generation"
+      ]
     },
     {
       "id": "PW-005",
       "title": "Add exception engine and revision history",
       "description": "System warning generation, review workflows, and immutable admin revisions.",
-      "affected_modules": ["warnings_exceptions", "revision_history", "dashboards", "weekly_forms"],
-      "affected_dashboards": ["healthcare_admin", "case_manager", "caregiver"],
-      "affected_workflows": ["wf_weekly_submission_and_signatures", "wf_admin_revision_and_exports"],
+      "affected_modules": [
+        "warnings_exceptions",
+        "revision_history",
+        "dashboards",
+        "weekly_forms"
+      ],
+      "affected_dashboards": [
+        "healthcare_admin",
+        "case_manager",
+        "caregiver"
+      ],
+      "affected_workflows": [
+        "wf_weekly_submission_and_signatures",
+        "wf_admin_revision_and_exports"
+      ],
       "priority": "high",
       "status": "not_started",
-      "dependencies": ["PW-004"],
+      "dependencies": [
+        "PW-004"
+      ],
       "proposed_solution": "Rule engine for warning generation plus revision diff store with timeline UI.",
-      "blockers": ["none"],
-      "follow_up_steps": ["warning taxonomy", "exception SLA statuses", "diff audit rendering"]
+      "blockers": [
+        "none"
+      ],
+      "follow_up_steps": [
+        "warning taxonomy",
+        "exception SLA statuses",
+        "diff audit rendering"
+      ]
     },
     {
       "id": "PW-006",
       "title": "Implement billing/payroll/reporting/export stack",
       "description": "Generate billing and payroll line items from approved records and expose report/export center.",
-      "affected_modules": ["billing", "payroll", "reports", "import_export", "parser"],
-      "affected_dashboards": ["healthcare_admin", "super_admin"],
-      "affected_workflows": ["wf_admin_revision_and_exports"],
+      "affected_modules": [
+        "billing",
+        "payroll",
+        "reports",
+        "import_export",
+        "parser"
+      ],
+      "affected_dashboards": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "affected_workflows": [
+        "wf_admin_revision_and_exports"
+      ],
       "priority": "high",
       "status": "not_started",
-      "dependencies": ["PW-005"],
+      "dependencies": [
+        "PW-005"
+      ],
       "proposed_solution": "Pipeline from approved weekly forms to line items to export jobs with status tracking.",
-      "blockers": ["payer billing rule catalog not defined"],
-      "follow_up_steps": ["line item engines", "file center jobs", "report metric aggregation"]
+      "blockers": [
+        "payer billing rule catalog not defined"
+      ],
+      "follow_up_steps": [
+        "line item engines",
+        "file center jobs",
+        "report metric aggregation"
+      ]
     },
     {
       "id": "PW-007",
       "title": "Implement patient portal and notifications",
       "description": "Patient-facing signature workflow and role-appropriate notifications.",
-      "affected_modules": ["patient_portal", "signatures", "notification_system"],
-      "affected_dashboards": ["patient", "caregiver", "healthcare_admin"],
-      "affected_workflows": ["wf_weekly_submission_and_signatures"],
+      "affected_modules": [
+        "patient_portal",
+        "signatures",
+        "notification_system"
+      ],
+      "affected_dashboards": [
+        "patient",
+        "caregiver",
+        "healthcare_admin"
+      ],
+      "affected_workflows": [
+        "wf_weekly_submission_and_signatures"
+      ],
       "priority": "high",
       "status": "not_started",
-      "dependencies": ["PW-004"],
+      "dependencies": [
+        "PW-004"
+      ],
       "proposed_solution": "Portal task list centered on pending signature actions with direct weekly form context.",
-      "blockers": ["none"],
-      "follow_up_steps": ["notification templates", "portal route guards", "signature verification"]
+      "blockers": [
+        "none"
+      ],
+      "follow_up_steps": [
+        "notification templates",
+        "portal route guards",
+        "signature verification"
+      ]
     }
   ]
 }

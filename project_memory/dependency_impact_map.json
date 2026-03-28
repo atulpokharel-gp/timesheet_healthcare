@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "version": "0.4.0-pw003-admission-m1",
-    "last_updated": "2026-03-28T03:00:00Z",
+    "version": "0.5.2-pw003-route-surface-m2b",
+    "last_updated": "2026-03-28T10:10:00Z",
     "usage_rule": "Update this map before and after every meaningful change to evaluate ripple effects."
   },
   "domains": [
@@ -26,47 +26,106 @@
   "impact_rules": [
     {
       "trigger": "auth_or_role_change",
-      "must_evaluate": ["routes", "permissions", "dashboards", "workflows", "apis", "audit_trail"],
+      "must_evaluate": [
+        "routes",
+        "permissions",
+        "dashboards",
+        "workflows",
+        "apis",
+        "audit_trail"
+      ],
       "risk": "high"
     },
     {
       "trigger": "patient_or_assignment_change",
-      "must_evaluate": ["scheduling", "daily_entries", "weekly_forms", "warnings", "reports", "billing", "payroll"],
+      "must_evaluate": [
+        "scheduling",
+        "daily_entries",
+        "weekly_forms",
+        "warnings",
+        "reports",
+        "billing",
+        "payroll"
+      ],
       "risk": "high"
     },
     {
       "trigger": "authorization_rule_change",
-      "must_evaluate": ["validations", "warnings", "weekly_forms", "billing", "reports", "audit_trail"],
+      "must_evaluate": [
+        "validations",
+        "warnings",
+        "weekly_forms",
+        "billing",
+        "reports",
+        "audit_trail"
+      ],
       "risk": "critical"
     },
     {
       "trigger": "schedule_change",
-      "must_evaluate": ["caregiver_dashboard", "daily_workflow", "gps_evv", "warnings", "payroll", "billing"],
+      "must_evaluate": [
+        "caregiver_dashboard",
+        "daily_workflow",
+        "gps_evv",
+        "warnings",
+        "payroll",
+        "billing"
+      ],
       "risk": "high"
     },
     {
       "trigger": "signature_logic_change",
-      "must_evaluate": ["weekly_submission", "patient_portal", "warnings", "exports", "audit_trail"],
+      "must_evaluate": [
+        "weekly_submission",
+        "patient_portal",
+        "warnings",
+        "exports",
+        "audit_trail"
+      ],
       "risk": "critical"
     },
     {
       "trigger": "warning_engine_change",
-      "must_evaluate": ["dashboards", "route_deep_links", "exceptions", "notifications", "reports"],
+      "must_evaluate": [
+        "dashboards",
+        "route_deep_links",
+        "exceptions",
+        "notifications",
+        "reports"
+      ],
       "risk": "high"
     },
     {
       "trigger": "revision_or_edit_policy_change",
-      "must_evaluate": ["weekly_forms", "revision_history", "reports", "exports", "audit_trail"],
+      "must_evaluate": [
+        "weekly_forms",
+        "revision_history",
+        "reports",
+        "exports",
+        "audit_trail"
+      ],
       "risk": "critical"
     },
     {
       "trigger": "billing_or_payroll_rule_change",
-      "must_evaluate": ["line_items", "exports", "reports", "approvals", "audit_trail"],
+      "must_evaluate": [
+        "line_items",
+        "exports",
+        "reports",
+        "approvals",
+        "audit_trail"
+      ],
       "risk": "critical"
     },
     {
       "trigger": "import_export_parser_change",
-      "must_evaluate": ["data_contracts", "validation", "jobs", "reports", "audit_trail"],
+      "must_evaluate": [
+        "data_contracts",
+        "validation",
+        "jobs",
+        "reports",
+        "audit_trail"
+      ],
       "risk": "high"
     }
   ],
@@ -88,53 +147,191 @@
   },
   "change_impact_entries": [
     {
+      "id": "DIM-0008",
+      "timestamp": "2026-03-28T10:10:00Z",
+      "change_title": "Clarify caregiver route placeholder identifiers",
+      "changed_artifacts": [
+        "apps/web/src/app/(app)/dashboard/caregiver/page.tsx"
+      ],
+      "impacted_domains": [
+        "routes",
+        "dashboards",
+        "ui_components"
+      ],
+      "impact_summary": "Dashboard links now use clearer placeholder IDs for dynamic routes.",
+      "required_follow_up": [
+        "replace placeholders with runtime IDs from data queries"
+      ],
+      "status": "recorded"
+    },
+    {
+      "id": "DIM-0007",
+      "timestamp": "2026-03-28T10:06:00Z",
+      "change_title": "Correct caregiver dashboard deep links to parameterized route surfaces",
+      "changed_artifacts": [
+        "apps/web/src/app/(app)/dashboard/caregiver/page.tsx"
+      ],
+      "impacted_domains": [
+        "routes",
+        "dashboards",
+        "workflows",
+        "ui_components"
+      ],
+      "impact_summary": "Caregiver dashboard now links to existing dynamic routes instead of non-existent static paths.",
+      "required_follow_up": [
+        "bind real occurrence/week identifiers from scheduling data once workflow engine is implemented"
+      ],
+      "status": "recorded"
+    },
+    {
+      "id": "DIM-0006",
+      "timestamp": "2026-03-28T09:58:00Z",
+      "change_title": "PW-003 milestone 2 scaffold connected routes for required workflow surfaces",
+      "changed_artifacts": [
+        "apps/web/src/app/(public)/why-choose-us/page.tsx",
+        "apps/web/src/app/(public)/what-we-solve/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/*",
+        "apps/web/src/app/(app)/dashboard/caregiver/visits/[occurrenceId]/page.tsx",
+        "apps/web/src/app/(app)/dashboard/caregiver/week/[weekId]/page.tsx",
+        "apps/web/src/app/(app)/dashboard/case-manager/exceptions/page.tsx",
+        "apps/web/src/app/(app)/portal/patient/signatures/page.tsx",
+        "apps/web/src/modules/module-boundaries.ts"
+      ],
+      "impacted_domains": [
+        "routes",
+        "dashboards",
+        "workflows",
+        "permissions",
+        "ui_components"
+      ],
+      "impact_summary": "Required routes now exist and remain role-guarded, reducing disconnected architecture risk while leaving module logic pending.",
+      "required_follow_up": [
+        "implement workflow engines behind new routes",
+        "add route and workflow continuity tests",
+        "integrate persistent data layer"
+      ],
+      "status": "recorded"
+    },
+    {
       "id": "DIM-0005",
       "timestamp": "2026-03-28T03:00:00Z",
       "change_title": "PW-003 milestone 1 implement patient admission/list/detail MVP",
-      "changed_artifacts": ["apps/web/src/modules/patients/*", "apps/web/src/app/(app)/dashboard/admin/page.tsx", "apps/web/src/app/(app)/dashboard/admin/patients/*", "apps/web/src/modules/module-boundaries.ts"],
-      "impacted_domains": ["dashboards", "routes", "workflows", "entities", "validations", "permissions", "ui_components"],
+      "changed_artifacts": [
+        "apps/web/src/modules/patients/*",
+        "apps/web/src/app/(app)/dashboard/admin/page.tsx",
+        "apps/web/src/app/(app)/dashboard/admin/patients/*",
+        "apps/web/src/modules/module-boundaries.ts"
+      ],
+      "impacted_domains": [
+        "dashboards",
+        "routes",
+        "workflows",
+        "entities",
+        "validations",
+        "permissions",
+        "ui_components"
+      ],
       "impact_summary": "Healthcare admin can now complete an admission workflow slice end-to-end, but persistence and authorization/scheduling integration are pending.",
-      "required_follow_up": ["replace in-memory patient repository", "connect assignment directories", "bridge admission schedule inputs to scheduling engine", "add integration tests for admission flow"],
+      "required_follow_up": [
+        "replace in-memory patient repository",
+        "connect assignment directories",
+        "bridge admission schedule inputs to scheduling engine",
+        "add integration tests for admission flow"
+      ],
       "status": "recorded"
     },
     {
       "id": "DIM-0004",
       "timestamp": "2026-03-28T02:20:00Z",
       "change_title": "PW-002 stabilize selector transition logic and redirect continuity",
-      "changed_artifacts": ["apps/web/src/lib/auth/session.ts", "apps/web/src/app/(app)/select-agency/page.tsx", "apps/web/src/app/(app)/select-role/page.tsx"],
-      "impacted_domains": ["routes", "permissions", "workflows", "dashboards", "entities"],
+      "changed_artifacts": [
+        "apps/web/src/lib/auth/session.ts",
+        "apps/web/src/app/(app)/select-agency/page.tsx",
+        "apps/web/src/app/(app)/select-role/page.tsx"
+      ],
+      "impacted_domains": [
+        "routes",
+        "permissions",
+        "workflows",
+        "dashboards",
+        "entities"
+      ],
       "impact_summary": "Eliminated implicit role routing and added deterministic auto-selection only for single-option cases, reducing loop risk in auth transition paths.",
-      "required_follow_up": ["run integration redirect matrix tests", "verify behavior for users with no valid role assignments"],
+      "required_follow_up": [
+        "run integration redirect matrix tests",
+        "verify behavior for users with no valid role assignments"
+      ],
       "status": "recorded"
     },
     {
       "id": "DIM-0001",
       "timestamp": "2026-03-28T00:00:00Z",
       "change_title": "Initialize mandatory project memory baseline",
-      "changed_artifacts": ["project_memory/*.json"],
-      "impacted_domains": ["dashboards", "routes", "workflows", "entities", "permissions", "audit_trail"],
+      "changed_artifacts": [
+        "project_memory/*.json"
+      ],
+      "impacted_domains": [
+        "dashboards",
+        "routes",
+        "workflows",
+        "entities",
+        "permissions",
+        "audit_trail"
+      ],
       "impact_summary": "Introduced architecture-aware planning baseline; no runtime code impact yet.",
-      "required_follow_up": ["implement PW-001 and PW-002 before module-specific delivery"],
+      "required_follow_up": [
+        "implement PW-001 and PW-002 before module-specific delivery"
+      ],
       "status": "recorded"
     },
     {
       "id": "DIM-0002",
       "timestamp": "2026-03-28T01:00:00Z",
       "change_title": "PW-001 scaffold Next.js + TypeScript + Tailwind foundation",
-      "changed_artifacts": ["apps/web/*", "project_memory/*.json"],
-      "impacted_domains": ["routes", "dashboards", "ui_components", "permissions", "workflows"],
+      "changed_artifacts": [
+        "apps/web/*",
+        "project_memory/*.json"
+      ],
+      "impacted_domains": [
+        "routes",
+        "dashboards",
+        "ui_components",
+        "permissions",
+        "workflows"
+      ],
       "impact_summary": "Created route-group scaffold and module boundaries with placeholder dashboard pages and middleware hook points.",
-      "required_follow_up": ["execute PW-002 auth/tenant/role wiring", "install dependencies and run build checks"],
+      "required_follow_up": [
+        "execute PW-002 auth/tenant/role wiring",
+        "install dependencies and run build checks"
+      ],
       "status": "recorded"
     },
     {
       "id": "DIM-0003",
       "timestamp": "2026-03-28T02:00:00Z",
       "change_title": "PW-002 implement login/session, selectors, middleware guards, and role redirects",
-      "changed_artifacts": ["apps/web/src/app/(auth)/auth/login/page.tsx", "apps/web/src/app/(app)/select-agency/page.tsx", "apps/web/src/app/(app)/select-role/page.tsx", "apps/web/middleware.ts", "apps/web/src/lib/auth/*", "apps/web/src/modules/auth/mock-users.ts"],
-      "impacted_domains": ["routes", "permissions", "workflows", "dashboards", "entities", "audit_trail"],
+      "changed_artifacts": [
+        "apps/web/src/app/(auth)/auth/login/page.tsx",
+        "apps/web/src/app/(app)/select-agency/page.tsx",
+        "apps/web/src/app/(app)/select-role/page.tsx",
+        "apps/web/middleware.ts",
+        "apps/web/src/lib/auth/*",
+        "apps/web/src/modules/auth/mock-users.ts"
+      ],
+      "impacted_domains": [
+        "routes",
+        "permissions",
+        "workflows",
+        "dashboards",
+        "entities",
+        "audit_trail"
+      ],
       "impact_summary": "Auth entry flow now resolves agency and role context and enforces role-route matching for dashboard and portal routes.",
-      "required_follow_up": ["replace mock auth with production identity provider", "add session signing and rotation", "add integration tests for redirect matrix"],
+      "required_follow_up": [
+        "replace mock auth with production identity provider",
+        "add session signing and rotation",
+        "add integration tests for redirect matrix"
+      ],
       "status": "recorded"
     }
   ]

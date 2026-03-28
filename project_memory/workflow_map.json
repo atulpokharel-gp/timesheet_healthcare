@@ -1,15 +1,23 @@
 {
   "metadata": {
-    "version": "0.4.0-pw003-admission-m1",
-    "last_updated": "2026-03-28T03:00:00Z",
-    "status": "pw003-admission-m1-implemented"
+    "version": "0.5.2-pw003-route-surface-m2b",
+    "last_updated": "2026-03-28T10:10:00Z",
+    "status": "pw003-route-surfaces-scaffolded"
   },
   "workflows": [
     {
       "id": "wf_landing_to_portal",
       "name": "Landing Page to Portal Workflow",
-      "actors": ["super_admin", "healthcare_admin", "case_manager", "caregiver", "patient"],
-      "entry_points": ["/"],
+      "actors": [
+        "super_admin",
+        "healthcare_admin",
+        "case_manager",
+        "caregiver",
+        "patient"
+      ],
+      "entry_points": [
+        "/"
+      ],
       "steps": [
         "View landing page",
         "Click login or get started",
@@ -18,22 +26,64 @@
         "Select role if multi-role user",
         "Redirect to role dashboard"
       ],
-      "decision_points": ["is_authenticated", "has_multiple_agencies", "has_multiple_roles"],
-      "validations": ["credential_valid", "tenant_access_allowed", "role_access_allowed"],
-      "warnings": ["session_expired", "agency_not_authorized", "role_not_authorized"],
-      "dependencies": ["landing_page", "auth", "tenancy", "role_management", "dashboards"],
-      "linked_entities": ["user", "session", "agency", "role_assignment"],
-      "linked_routes": ["/", "/auth/login", "/select-agency", "/select-role"],
-      "exit_points": ["/dashboard/*", "/portal/patient"],
-      "incomplete_areas": ["external identity provider", "session signing/rotation", "mfa readiness"],
-      "optimization_opportunities": ["single redirect orchestrator", "role-aware landing shortcuts"],
+      "decision_points": [
+        "is_authenticated",
+        "has_multiple_agencies",
+        "has_multiple_roles"
+      ],
+      "validations": [
+        "credential_valid",
+        "tenant_access_allowed",
+        "role_access_allowed"
+      ],
+      "warnings": [
+        "session_expired",
+        "agency_not_authorized",
+        "role_not_authorized"
+      ],
+      "dependencies": [
+        "landing_page",
+        "auth",
+        "tenancy",
+        "role_management",
+        "dashboards"
+      ],
+      "linked_entities": [
+        "user",
+        "session",
+        "agency",
+        "role_assignment"
+      ],
+      "linked_routes": [
+        "/",
+        "/auth/login",
+        "/select-agency",
+        "/select-role"
+      ],
+      "exit_points": [
+        "/dashboard/*",
+        "/portal/patient"
+      ],
+      "incomplete_areas": [
+        "external identity provider",
+        "session signing/rotation",
+        "mfa readiness"
+      ],
+      "optimization_opportunities": [
+        "single redirect orchestrator",
+        "role-aware landing shortcuts"
+      ],
       "status": "implemented_mock"
     },
     {
       "id": "wf_patient_admission",
       "name": "Patient Admission Workflow",
-      "actors": ["healthcare_admin"],
-      "entry_points": ["/dashboard/admin/patients/new"],
+      "actors": [
+        "healthcare_admin"
+      ],
+      "entry_points": [
+        "/dashboard/admin/patients/new"
+      ],
       "steps": [
         "Create patient record",
         "Enter demographics and identifiers",
@@ -42,22 +92,64 @@
         "Assign care plan and form template",
         "Activate patient"
       ],
-      "decision_points": ["authorization_effective_date_conflict", "assignment_conflict"],
-      "validations": ["required_demographics", "identifier_uniqueness", "authorization_rule_valid"],
-      "warnings": ["authorization_gap", "missing_assignment", "inactive_schedule"],
-      "dependencies": ["patient_admission", "patient_management", "authorization_rules", "scheduling"],
-      "linked_entities": ["patient", "patient_identifiers", "patient_authorization", "care_plan"],
-      "linked_routes": ["/dashboard/admin", "/dashboard/admin/patients", "/dashboard/admin/patients/new", "/dashboard/admin/patients/:id"],
-      "exit_points": ["/dashboard/admin/patients/:id", "/dashboard/admin/patients"],
-      "incomplete_areas": ["authorization effective-date policy integration", "staff directory-backed assignment", "schedule generation and recurrence engine", "persistent database layer"],
-      "optimization_opportunities": ["wizard with validation checkpoints", "admission preflight for assignment and authorization conflicts"],
+      "decision_points": [
+        "authorization_effective_date_conflict",
+        "assignment_conflict"
+      ],
+      "validations": [
+        "required_demographics",
+        "identifier_uniqueness",
+        "authorization_rule_valid"
+      ],
+      "warnings": [
+        "authorization_gap",
+        "missing_assignment",
+        "inactive_schedule"
+      ],
+      "dependencies": [
+        "patient_admission",
+        "patient_management",
+        "authorization_rules",
+        "scheduling"
+      ],
+      "linked_entities": [
+        "patient",
+        "patient_identifiers",
+        "patient_authorization",
+        "care_plan"
+      ],
+      "linked_routes": [
+        "/dashboard/admin",
+        "/dashboard/admin/patients",
+        "/dashboard/admin/patients/new",
+        "/dashboard/admin/patients/:id"
+      ],
+      "exit_points": [
+        "/dashboard/admin/patients/:id",
+        "/dashboard/admin/patients"
+      ],
+      "incomplete_areas": [
+        "authorization effective-date policy integration",
+        "staff directory-backed assignment",
+        "schedule generation and recurrence engine",
+        "persistent database layer"
+      ],
+      "optimization_opportunities": [
+        "wizard with validation checkpoints",
+        "admission preflight for assignment and authorization conflicts"
+      ],
       "status": "implemented_mvp"
     },
     {
       "id": "wf_caregiver_daily_visit",
       "name": "Caregiver Daily Visit Workflow",
-      "actors": ["caregiver"],
-      "entry_points": ["/dashboard/caregiver/today"],
+      "actors": [
+        "caregiver"
+      ],
+      "entry_points": [
+        "/dashboard/caregiver",
+        "/dashboard/caregiver/visits/:occurrenceId"
+      ],
       "steps": [
         "Open assigned visit",
         "Clock in with GPS",
@@ -66,22 +158,66 @@
         "Clock out with GPS",
         "Sync or queue offline"
       ],
-      "decision_points": ["online_or_offline", "gps_confidence_low", "required_fields_missing"],
-      "validations": ["clock_in_before_clock_out", "required_tasks_complete", "location_policy_check"],
-      "warnings": ["missing_clock_out", "gps_mismatch", "incomplete_required_fields"],
-      "dependencies": ["scheduling", "daily_entries", "gps_evv", "warnings_exceptions"],
-      "linked_entities": ["schedule_occurrence", "daily_entry", "time_entry", "gps_event", "warning"],
-      "linked_routes": ["/dashboard/caregiver", "/dashboard/caregiver/visits/:occurrenceId"],
-      "exit_points": ["/dashboard/caregiver/week/:weekId"],
-      "incomplete_areas": ["all"],
-      "optimization_opportunities": ["large touch targets", "offline-safe autosave"],
-      "status": "not_implemented"
+      "decision_points": [
+        "online_or_offline",
+        "gps_confidence_low",
+        "required_fields_missing"
+      ],
+      "validations": [
+        "clock_in_before_clock_out",
+        "required_tasks_complete",
+        "location_policy_check"
+      ],
+      "warnings": [
+        "missing_clock_out",
+        "gps_mismatch",
+        "incomplete_required_fields"
+      ],
+      "dependencies": [
+        "scheduling",
+        "daily_entries",
+        "gps_evv",
+        "warnings_exceptions"
+      ],
+      "linked_entities": [
+        "schedule_occurrence",
+        "daily_entry",
+        "time_entry",
+        "gps_event",
+        "warning"
+      ],
+      "linked_routes": [
+        "/dashboard/caregiver",
+        "/dashboard/caregiver/visits/:occurrenceId"
+      ],
+      "exit_points": [
+        "/dashboard/caregiver/week/:weekId"
+      ],
+      "incomplete_areas": [
+        "draft persistence",
+        "task checklist logic",
+        "gps capture and confidence checks",
+        "warning generation"
+      ],
+      "optimization_opportunities": [
+        "large touch targets",
+        "offline-safe autosave"
+      ],
+      "status": "scaffolded_foundation"
     },
     {
       "id": "wf_weekly_submission_and_signatures",
       "name": "Weekly Submission and Signature Workflow",
-      "actors": ["caregiver", "patient", "healthcare_admin", "case_manager"],
-      "entry_points": ["/dashboard/caregiver/week/:weekId"],
+      "actors": [
+        "caregiver",
+        "patient",
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "entry_points": [
+        "/dashboard/caregiver/week/:weekId",
+        "/portal/patient/signatures"
+      ],
       "steps": [
         "Review weekly entries",
         "Run validation checks",
@@ -90,22 +226,66 @@
         "Submit week",
         "Surface warnings/exceptions for reviewer roles"
       ],
-      "decision_points": ["copy_review_completed", "signature_complete", "hours_within_authorization"],
-      "validations": ["no_signature_copy", "required_signatures", "hours_validation", "gps_event_linkage"],
-      "warnings": ["missing_patient_signature", "missing_caregiver_signature", "over_authorized_hours"],
-      "dependencies": ["weekly_forms", "signatures", "warnings_exceptions", "authorization_rules"],
-      "linked_entities": ["weekly_form", "signature", "warning", "exception"],
-      "linked_routes": ["/dashboard/caregiver/week/:weekId", "/portal/patient/signatures"],
-      "exit_points": ["/dashboard/caregiver/history", "/dashboard/admin/submissions"],
-      "incomplete_areas": ["all"],
-      "optimization_opportunities": ["single submit preflight panel"],
-      "status": "not_implemented"
+      "decision_points": [
+        "copy_review_completed",
+        "signature_complete",
+        "hours_within_authorization"
+      ],
+      "validations": [
+        "no_signature_copy",
+        "required_signatures",
+        "hours_validation",
+        "gps_event_linkage"
+      ],
+      "warnings": [
+        "missing_patient_signature",
+        "missing_caregiver_signature",
+        "over_authorized_hours"
+      ],
+      "dependencies": [
+        "weekly_forms",
+        "signatures",
+        "warnings_exceptions",
+        "authorization_rules"
+      ],
+      "linked_entities": [
+        "weekly_form",
+        "signature",
+        "warning",
+        "exception"
+      ],
+      "linked_routes": [
+        "/dashboard/caregiver/week/:weekId",
+        "/portal/patient/signatures"
+      ],
+      "exit_points": [
+        "/dashboard/caregiver/history",
+        "/dashboard/admin/submissions"
+      ],
+      "incomplete_areas": [
+        "copy policy execution",
+        "signature capture and verification",
+        "weekly validation engine",
+        "submission state transitions"
+      ],
+      "optimization_opportunities": [
+        "single submit preflight panel"
+      ],
+      "status": "scaffolded_foundation"
     },
     {
       "id": "wf_admin_revision_and_exports",
       "name": "Admin Revision and Billing/Payroll Export Workflow",
-      "actors": ["healthcare_admin", "super_admin"],
-      "entry_points": ["/dashboard/admin/submissions", "/dashboard/admin/exports"],
+      "actors": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "entry_points": [
+        "/dashboard/admin/submissions",
+        "/dashboard/admin/exceptions",
+        "/dashboard/admin/reports",
+        "/dashboard/admin/file-center"
+      ],
       "steps": [
         "Open submitted weekly form",
         "Review warnings",
@@ -113,16 +293,56 @@
         "Approve record",
         "Generate payroll-ready and billing-ready exports"
       ],
-      "decision_points": ["requires_revision", "export_format_valid", "payer_rule_match"],
-      "validations": ["audit_trail_present", "approved_state_required", "line_item_generation"],
-      "warnings": ["admin_edit_after_submission", "rule_mapping_missing"],
-      "dependencies": ["revision_history", "payroll", "billing", "reports", "export_center"],
-      "linked_entities": ["revision", "payroll_line_item", "billing_line_item", "export_job"],
-      "linked_routes": ["/dashboard/admin/submissions", "/dashboard/admin/revisions", "/dashboard/admin/exports"],
-      "exit_points": ["/dashboard/admin/reports"],
-      "incomplete_areas": ["all"],
-      "optimization_opportunities": ["diff-first review UI", "export job replay"],
-      "status": "not_implemented"
+      "decision_points": [
+        "requires_revision",
+        "export_format_valid",
+        "payer_rule_match"
+      ],
+      "validations": [
+        "audit_trail_present",
+        "approved_state_required",
+        "line_item_generation"
+      ],
+      "warnings": [
+        "admin_edit_after_submission",
+        "rule_mapping_missing"
+      ],
+      "dependencies": [
+        "revision_history",
+        "payroll",
+        "billing",
+        "reports",
+        "export_center"
+      ],
+      "linked_entities": [
+        "revision",
+        "payroll_line_item",
+        "billing_line_item",
+        "export_job"
+      ],
+      "linked_routes": [
+        "/dashboard/admin/submissions",
+        "/dashboard/admin/exceptions",
+        "/dashboard/admin/billing",
+        "/dashboard/admin/payroll",
+        "/dashboard/admin/exports",
+        "/dashboard/admin/reports",
+        "/dashboard/admin/file-center"
+      ],
+      "exit_points": [
+        "/dashboard/admin/reports"
+      ],
+      "incomplete_areas": [
+        "revision diff engine",
+        "approval state machine",
+        "line item generation",
+        "export job runtime"
+      ],
+      "optimization_opportunities": [
+        "diff-first review UI",
+        "export job replay"
+      ],
+      "status": "scaffolded_foundation"
     }
   ]
 }

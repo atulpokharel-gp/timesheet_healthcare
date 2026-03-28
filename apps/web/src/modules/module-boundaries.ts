@@ -59,5 +59,77 @@ export const moduleBoundaries: ModuleBoundary[] = [
     ownerRoles: ["caregiver", "healthcare_admin"],
     routePrefixes: ["/dashboard/caregiver/week"],
     dependsOn: ["scheduling", "signatures", "warnings_exceptions"]
+  },
+  {
+    id: "signatures",
+    ownerRoles: ["caregiver", "patient", "healthcare_admin"],
+    routePrefixes: ["/dashboard/caregiver/week", "/portal/patient/signatures"],
+    dependsOn: ["weekly_forms", "patient_portal"]
+  },
+  {
+    id: "gps_evv",
+    ownerRoles: ["caregiver", "healthcare_admin", "case_manager"],
+    routePrefixes: ["/dashboard/caregiver/daily"],
+    dependsOn: ["scheduling", "daily_entries"]
+  },
+  {
+    id: "warnings_exceptions",
+    ownerRoles: ["healthcare_admin", "case_manager"],
+    routePrefixes: ["/dashboard/admin/exceptions", "/dashboard/case-manager/exceptions"],
+    dependsOn: ["weekly_forms", "signatures", "gps_evv"]
+  },
+  {
+    id: "authorization_rules",
+    ownerRoles: ["healthcare_admin"],
+    routePrefixes: ["/dashboard/admin/authorizations"],
+    dependsOn: ["patient_admission", "weekly_forms"]
+  },
+  {
+    id: "form_builder",
+    ownerRoles: ["healthcare_admin"],
+    routePrefixes: ["/dashboard/admin/form-builder"],
+    dependsOn: ["patient_admission"]
+  },
+  {
+    id: "reports",
+    ownerRoles: ["healthcare_admin", "super_admin"],
+    routePrefixes: ["/dashboard/admin/reports"],
+    dependsOn: ["billing", "payroll", "warnings_exceptions"]
+  },
+  {
+    id: "import_export",
+    ownerRoles: ["healthcare_admin", "super_admin"],
+    routePrefixes: ["/dashboard/admin/file-center", "/dashboard/admin/exports"],
+    dependsOn: ["reports", "billing", "payroll"]
+  },
+  {
+    id: "billing",
+    ownerRoles: ["healthcare_admin", "super_admin"],
+    routePrefixes: ["/dashboard/admin/billing"],
+    dependsOn: ["weekly_forms", "authorization_rules", "revision_history"]
+  },
+  {
+    id: "payroll",
+    ownerRoles: ["healthcare_admin", "super_admin"],
+    routePrefixes: ["/dashboard/admin/payroll"],
+    dependsOn: ["weekly_forms", "revision_history"]
+  },
+  {
+    id: "revision_history",
+    ownerRoles: ["healthcare_admin", "super_admin"],
+    routePrefixes: ["/dashboard/admin/submissions"],
+    dependsOn: ["weekly_forms", "warnings_exceptions"]
+  },
+  {
+    id: "patient_portal",
+    ownerRoles: ["patient"],
+    routePrefixes: ["/portal/patient"],
+    dependsOn: ["signatures", "warnings_exceptions"]
+  },
+  {
+    id: "daily_entries",
+    ownerRoles: ["caregiver"],
+    routePrefixes: ["/dashboard/caregiver/daily"],
+    dependsOn: ["scheduling", "patient_management"]
   }
 ];

@@ -1,43 +1,1685 @@
 {
   "metadata": {
-    "version": "0.4.0-pw003-admission-m1",
-    "last_updated": "2026-03-28T03:00:00Z",
-    "note": "Some schema elements are now partially implemented in code (session and patient admission MVP), while broader contracts remain proposed."
+    "version": "0.5.2-pw003-route-surface-m2b",
+    "last_updated": "2026-03-28T10:10:00Z",
+    "note": "Route surfaces are now scaffolded for required workflows; contract enforcement logic remains pending across most modules."
   },
   "entities": [
-    {"id": "user", "fields": ["id", "email", "display_name", "status", "created_at", "updated_at"], "required_fields": ["id", "email", "status"], "optional_fields": ["display_name"], "relationships": ["role_assignment", "agency"], "where_used": ["auth", "dashboards", "caregiver_management", "case_manager_management"], "who_edits": ["super_admin", "healthcare_admin", "self_limited"], "validation_rules": ["email_format", "active_status_for_login"], "lifecycle_states": ["invited", "active", "disabled"], "historical_versioning_needs": "low", "downstream_impact_if_changed": ["auth", "permissions", "dashboard_access"]},
-    {"id": "session", "fields": ["id", "user_id", "email", "scopes", "selected_agency_id", "active_role", "issued_at", "expires_at", "token_ref"], "required_fields": ["user_id", "email", "scopes", "issued_at"], "optional_fields": ["id", "selected_agency_id", "active_role", "expires_at", "token_ref"], "relationships": ["user", "agency", "role_assignment"], "where_used": ["auth", "route_guards", "agency_selector", "role_selector"], "who_edits": ["system", "authenticated_user_context"], "validation_rules": ["scopes_non_empty", "active_role_must_exist_in_selected_agency", "selected_agency_must_exist_in_scopes"], "lifecycle_states": ["active", "expired", "revoked"], "historical_versioning_needs": "low", "downstream_impact_if_changed": ["all_protected_routes", "role_based_redirects"]},
-    {"id": "agency", "fields": ["id", "name", "status", "timezone", "created_at"], "required_fields": ["id", "name", "status"], "optional_fields": ["timezone"], "relationships": ["user", "patient", "schedule"], "where_used": ["tenancy", "dashboards", "reports"], "who_edits": ["super_admin"], "validation_rules": ["name_unique"], "lifecycle_states": ["active", "suspended"], "historical_versioning_needs": "medium", "downstream_impact_if_changed": ["tenant_isolation", "all_data_scope_queries"]},
-    {"id": "role_assignment", "fields": ["id", "user_id", "agency_id", "role", "is_default"], "required_fields": ["id", "user_id", "agency_id", "role"], "optional_fields": ["is_default"], "relationships": ["user", "agency"], "where_used": ["auth", "role_management", "route_guards"], "who_edits": ["super_admin", "healthcare_admin"], "validation_rules": ["allowed_role_values"], "lifecycle_states": ["active", "revoked"], "historical_versioning_needs": "medium", "downstream_impact_if_changed": ["authorization", "dashboard_redirects"]},
-    {"id": "patient", "fields": ["id", "agency_id", "first_name", "last_name", "dob", "medicaid_id", "payer_program", "assigned_caregiver_id", "assigned_case_manager_id", "care_plan_template", "status", "created_at", "created_by"], "required_fields": ["id", "agency_id", "first_name", "last_name", "status", "created_at", "created_by"], "optional_fields": ["dob", "medicaid_id", "payer_program", "assigned_caregiver_id", "assigned_case_manager_id", "care_plan_template"], "relationships": ["patient_address", "patient_identifiers", "patient_authorization", "care_plan"], "where_used": ["patient_admission", "patient_management", "scheduling", "reports"], "who_edits": ["healthcare_admin"], "validation_rules": ["agency_scope_required", "medicaid_id_unique_by_agency"], "lifecycle_states": ["draft", "active", "inactive", "discharged"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["scheduling", "weekly_forms", "billing", "payroll", "reports"]},
-    {"id": "patient_address", "fields": ["id", "patient_id", "line1", "city", "state", "zip", "lat", "lng"], "required_fields": ["id", "patient_id", "line1", "city", "state", "zip"], "optional_fields": ["lat", "lng"], "relationships": ["patient"], "where_used": ["patient_admission", "gps_evv"], "who_edits": ["healthcare_admin"], "validation_rules": ["postal_code_format"], "lifecycle_states": ["active", "historical"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["gps_mismatch_warnings", "visit_context"]},
-    {"id": "patient_identifiers", "fields": ["id", "patient_id", "medicaid_id", "internal_id"], "required_fields": ["id", "patient_id"], "optional_fields": ["medicaid_id", "internal_id"], "relationships": ["patient"], "where_used": ["patient_admission", "billing", "exports"], "who_edits": ["healthcare_admin"], "validation_rules": ["medicaid_id_unique_by_agency", "internal_id_unique_by_agency"], "lifecycle_states": ["active", "historical"], "historical_versioning_needs": "medium", "downstream_impact_if_changed": ["claim_exports", "patient_lookup"]},
-    {"id": "patient_authorization", "fields": ["id", "patient_id", "effective_start", "effective_end", "authorized_daily_hours", "payer_program"], "required_fields": ["id", "patient_id", "effective_start", "authorized_daily_hours"], "optional_fields": ["effective_end", "payer_program"], "relationships": ["patient", "authorization_rule_version"], "where_used": ["patient_admission", "weekly_forms", "warnings_exceptions", "billing"], "who_edits": ["healthcare_admin"], "validation_rules": ["non_negative_hours", "non_overlapping_versions"], "lifecycle_states": ["pending", "active", "expired"], "historical_versioning_needs": "critical", "downstream_impact_if_changed": ["hours_validation", "billing_mode"]},
-    {"id": "authorization_rule_version", "fields": ["id", "authorization_id", "effective_start", "effective_end", "rule_payload"], "required_fields": ["id", "authorization_id", "effective_start", "rule_payload"], "optional_fields": ["effective_end"], "relationships": ["patient_authorization"], "where_used": ["weekly_forms", "validation_engine"], "who_edits": ["healthcare_admin"], "validation_rules": ["no_retroactive_breakage"], "lifecycle_states": ["draft", "active", "superseded"], "historical_versioning_needs": "critical", "downstream_impact_if_changed": ["weekly_validation", "audit_defensibility"]},
-    {"id": "patient_caregiver_assignment", "fields": ["id", "patient_id", "caregiver_id", "effective_start", "effective_end"], "required_fields": ["id", "patient_id", "caregiver_id", "effective_start"], "optional_fields": ["effective_end"], "relationships": ["patient", "user"], "where_used": ["scheduling", "dashboard_caregiver"], "who_edits": ["healthcare_admin"], "validation_rules": ["no_duplicate_active_assignment"], "lifecycle_states": ["active", "ended"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["visit_assignments", "submission_ownership"]},
-    {"id": "patient_case_manager_assignment", "fields": ["id", "patient_id", "case_manager_id", "effective_start", "effective_end"], "required_fields": ["id", "patient_id", "case_manager_id", "effective_start"], "optional_fields": ["effective_end"], "relationships": ["patient", "user"], "where_used": ["patient_management", "exceptions"], "who_edits": ["healthcare_admin"], "validation_rules": ["single_primary_case_manager_policy"], "lifecycle_states": ["active", "ended"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["exception_visibility", "care_continuity"]},
-    {"id": "care_plan", "fields": ["id", "patient_id", "name", "effective_start", "effective_end"], "required_fields": ["id", "patient_id", "name", "effective_start"], "optional_fields": ["effective_end"], "relationships": ["care_plan_task", "patient"], "where_used": ["patient_admission", "daily_entries"], "who_edits": ["healthcare_admin", "case_manager"], "validation_rules": ["effective_window_valid"], "lifecycle_states": ["draft", "active", "archived"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["task_checklists", "compliance_reporting"]},
-    {"id": "care_plan_task", "fields": ["id", "care_plan_id", "label", "required", "sort_order"], "required_fields": ["id", "care_plan_id", "label"], "optional_fields": ["required", "sort_order"], "relationships": ["care_plan"], "where_used": ["daily_entries", "weekly_forms"], "who_edits": ["healthcare_admin", "case_manager"], "validation_rules": ["label_not_empty"], "lifecycle_states": ["active", "inactive"], "historical_versioning_needs": "medium", "downstream_impact_if_changed": ["daily_form_completion"]},
-    {"id": "schedule", "fields": ["id", "agency_id", "patient_id", "caregiver_id", "start_date", "end_date", "recurrence_rule", "planned_start_time", "planned_end_time", "allocated_daily_hours"], "required_fields": ["id", "agency_id", "patient_id", "caregiver_id", "start_date"], "optional_fields": ["end_date", "recurrence_rule", "planned_start_time", "planned_end_time", "allocated_daily_hours"], "relationships": ["schedule_occurrence", "patient", "user"], "where_used": ["scheduling", "caregiver_dashboard", "weekly_forms"], "who_edits": ["healthcare_admin"], "validation_rules": ["no_overlap_for_caregiver", "positive_duration"], "lifecycle_states": ["draft", "active", "paused", "ended"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["visit_generation", "hours_validation", "warnings"]},
-    {"id": "schedule_occurrence", "fields": ["id", "schedule_id", "date", "planned_start", "planned_end", "status"], "required_fields": ["id", "schedule_id", "date"], "optional_fields": ["planned_start", "planned_end", "status"], "relationships": ["schedule", "daily_entry", "time_entry"], "where_used": ["caregiver_daily_workflow", "calendar"], "who_edits": ["system", "healthcare_admin"], "validation_rules": ["generated_from_schedule"], "lifecycle_states": ["pending", "in_progress", "completed", "missed", "cancelled"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["clock_in_out_flow", "submission_tracking"]},
-    {"id": "weekly_form", "fields": ["id", "agency_id", "patient_id", "caregiver_id", "week_start", "week_end", "status", "copied_from_previous_day", "copied_from_previous_week", "review_required_before_submit"], "required_fields": ["id", "agency_id", "patient_id", "caregiver_id", "week_start", "status"], "optional_fields": ["week_end", "copied_from_previous_day", "copied_from_previous_week", "review_required_before_submit"], "relationships": ["daily_entry", "signature", "revision", "warning"], "where_used": ["weekly_forms", "signatures", "revision_history", "reports", "billing", "payroll"], "who_edits": ["caregiver", "healthcare_admin"], "validation_rules": ["required_signatures_before_final_approval", "authorization_check"], "lifecycle_states": ["draft", "submitted", "under_review", "approved", "revised"], "historical_versioning_needs": "critical", "downstream_impact_if_changed": ["payroll", "billing", "exports", "audit"]},
-    {"id": "daily_entry", "fields": ["id", "weekly_form_id", "schedule_occurrence_id", "date", "tasks", "notes", "draft_status", "copy_source"], "required_fields": ["id", "weekly_form_id", "date"], "optional_fields": ["schedule_occurrence_id", "tasks", "notes", "draft_status", "copy_source"], "relationships": ["weekly_form", "time_entry", "gps_event"], "where_used": ["daily_entries", "weekly_forms", "warnings_exceptions"], "who_edits": ["caregiver", "healthcare_admin_limited"], "validation_rules": ["required_fields_per_template", "copy_review_rule"], "lifecycle_states": ["draft", "completed", "locked"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["weekly_submission_quality", "warning_generation"]},
-    {"id": "time_entry", "fields": ["id", "daily_entry_id", "clock_in_at", "clock_out_at", "duration_minutes", "manual_override_reason"], "required_fields": ["id", "daily_entry_id", "clock_in_at"], "optional_fields": ["clock_out_at", "duration_minutes", "manual_override_reason"], "relationships": ["daily_entry", "gps_event"], "where_used": ["gps_evv", "weekly_forms", "payroll", "billing"], "who_edits": ["caregiver", "healthcare_admin_limited"], "validation_rules": ["clock_out_after_clock_in", "override_reason_when_manual"], "lifecycle_states": ["open", "closed", "flagged"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["hours_totals", "payroll_calculation", "billing_calculation"]},
-    {"id": "gps_event", "fields": ["id", "time_entry_id", "event_type", "captured_at", "lat", "lng", "accuracy", "confidence", "fallback_context"], "required_fields": ["id", "time_entry_id", "event_type", "captured_at"], "optional_fields": ["lat", "lng", "accuracy", "confidence", "fallback_context"], "relationships": ["time_entry", "warning"], "where_used": ["gps_evv", "warnings_exceptions", "anomaly_hooks"], "who_edits": ["system", "caregiver"], "validation_rules": ["event_type_in_out_only", "geo_within_policy_or_flag"], "lifecycle_states": ["captured", "synced", "flagged"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["evv_compliance", "exception_workflow"]},
-    {"id": "signature", "fields": ["id", "weekly_form_id", "signer_role", "signer_id", "signed_at", "method", "artifact_ref"], "required_fields": ["id", "weekly_form_id", "signer_role", "signed_at"], "optional_fields": ["signer_id", "method", "artifact_ref"], "relationships": ["weekly_form", "warning"], "where_used": ["signatures", "weekly_submission", "pdf_export"], "who_edits": ["caregiver", "patient"], "validation_rules": ["one_active_signature_per_role_per_week", "no_signature_copy"], "lifecycle_states": ["missing", "captured", "invalidated"], "historical_versioning_needs": "critical", "downstream_impact_if_changed": ["submission_validity", "audit", "legal_defensibility"]},
-    {"id": "warning", "fields": ["id", "type", "severity", "agency_id", "patient_id", "caregiver_id", "week_or_day_ref", "reason", "target_route", "target_section", "assigned_reviewer_id", "status", "resolution_notes"], "required_fields": ["id", "type", "severity", "agency_id", "status", "reason"], "optional_fields": ["patient_id", "caregiver_id", "week_or_day_ref", "target_route", "target_section", "assigned_reviewer_id", "resolution_notes"], "relationships": ["exception", "weekly_form", "daily_entry"], "where_used": ["warnings_exceptions", "dashboards", "notifications", "reports"], "who_edits": ["system", "healthcare_admin", "case_manager"], "validation_rules": ["type_enumeration", "status_transition_rules"], "lifecycle_states": ["open", "in_review", "resolved", "dismissed"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["workflow_navigation", "compliance_reporting"]},
-    {"id": "exception", "fields": ["id", "warning_id", "owner_role", "owner_id", "status", "notes"], "required_fields": ["id", "warning_id", "status"], "optional_fields": ["owner_role", "owner_id", "notes"], "relationships": ["warning", "revision"], "where_used": ["warnings_exceptions", "admin_review", "case_manager_review"], "who_edits": ["healthcare_admin", "case_manager"], "validation_rules": ["warning_exists", "status_transition_rules"], "lifecycle_states": ["open", "in_review", "resolved"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["resolution_sla", "audit"]},
-    {"id": "revision", "fields": ["id", "weekly_form_id", "revision_number", "changed_by", "changed_at", "change_reason", "diff_payload"], "required_fields": ["id", "weekly_form_id", "revision_number", "changed_by", "changed_at"], "optional_fields": ["change_reason", "diff_payload"], "relationships": ["weekly_form", "exception"], "where_used": ["revision_history", "admin_review", "pdf_export"], "who_edits": ["healthcare_admin", "system"], "validation_rules": ["immutable_revision_entries", "increment_revision_number"], "lifecycle_states": ["recorded"], "historical_versioning_needs": "critical", "downstream_impact_if_changed": ["auditability", "legal_traceability"]},
-    {"id": "form_template", "fields": ["id", "agency_id", "name", "group", "payer_scope", "status"], "required_fields": ["id", "agency_id", "name", "status"], "optional_fields": ["group", "payer_scope"], "relationships": ["form_template_version", "weekly_form"], "where_used": ["form_builder", "patient_admission"], "who_edits": ["healthcare_admin"], "validation_rules": ["name_unique_within_agency"], "lifecycle_states": ["draft", "active", "archived"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["rendered_forms", "validation_rules"]},
-    {"id": "form_template_version", "fields": ["id", "template_id", "version", "effective_start", "effective_end", "fields_payload"], "required_fields": ["id", "template_id", "version", "effective_start", "fields_payload"], "optional_fields": ["effective_end"], "relationships": ["form_template"], "where_used": ["form_builder", "weekly_forms", "pdf_export"], "who_edits": ["healthcare_admin"], "validation_rules": ["no_overlapping_effective_ranges"], "lifecycle_states": ["draft", "active", "superseded"], "historical_versioning_needs": "critical", "downstream_impact_if_changed": ["backward_compatibility", "submission_rendering"]},
-    {"id": "payroll_rule", "fields": ["id", "agency_id", "name", "rule_type", "rate", "effective_start", "effective_end"], "required_fields": ["id", "agency_id", "name", "rule_type", "rate", "effective_start"], "optional_fields": ["effective_end"], "relationships": ["payroll_line_item"], "where_used": ["payroll"], "who_edits": ["healthcare_admin", "super_admin"], "validation_rules": ["rate_non_negative", "effective_window_valid"], "lifecycle_states": ["active", "superseded"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["payroll_totals", "exports"]},
-    {"id": "payroll_line_item", "fields": ["id", "weekly_form_id", "caregiver_id", "pay_rule_id", "minutes", "amount", "status"], "required_fields": ["id", "weekly_form_id", "caregiver_id", "pay_rule_id", "minutes", "amount"], "optional_fields": ["status"], "relationships": ["weekly_form", "payroll_rule"], "where_used": ["payroll", "reports", "exports"], "who_edits": ["system", "healthcare_admin_approval"], "validation_rules": ["approved_form_required"], "lifecycle_states": ["generated", "approved", "exported"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["finance_reports", "payroll_exports"]},
-    {"id": "billing_rule", "fields": ["id", "agency_id", "name", "mode", "service_code", "rate", "effective_start", "effective_end"], "required_fields": ["id", "agency_id", "name", "mode", "effective_start"], "optional_fields": ["service_code", "rate", "effective_end"], "relationships": ["billing_line_item", "patient_authorization"], "where_used": ["billing"], "who_edits": ["healthcare_admin", "super_admin"], "validation_rules": ["mode_supported", "effective_window_valid"], "lifecycle_states": ["active", "superseded"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["claim_accuracy", "billing_exports"]},
-    {"id": "billing_line_item", "fields": ["id", "weekly_form_id", "patient_id", "billing_rule_id", "units", "amount", "status"], "required_fields": ["id", "weekly_form_id", "patient_id", "billing_rule_id", "units"], "optional_fields": ["amount", "status"], "relationships": ["weekly_form", "billing_rule", "patient"], "where_used": ["billing", "reports", "exports"], "who_edits": ["system", "healthcare_admin_approval"], "validation_rules": ["approved_form_required", "service_code_resolved"], "lifecycle_states": ["generated", "approved", "exported"], "historical_versioning_needs": "high", "downstream_impact_if_changed": ["revenue_reporting", "payer_submissions"]},
-    {"id": "report_definition", "fields": ["id", "agency_scope", "name", "metric_set", "filters_schema"], "required_fields": ["id", "name", "metric_set"], "optional_fields": ["agency_scope", "filters_schema"], "relationships": ["payroll_line_item", "billing_line_item", "warning"], "where_used": ["reports", "dashboards"], "who_edits": ["super_admin", "healthcare_admin"], "validation_rules": ["metric_set_supported"], "lifecycle_states": ["active", "archived"], "historical_versioning_needs": "medium", "downstream_impact_if_changed": ["analytics_consistency"]},
-    {"id": "import_job", "fields": ["id", "agency_id", "job_type", "file_ref", "status", "created_at", "completed_at", "summary"], "required_fields": ["id", "agency_id", "job_type", "file_ref", "status", "created_at"], "optional_fields": ["completed_at", "summary"], "relationships": ["parser_job"], "where_used": ["import_export", "file_center"], "who_edits": ["healthcare_admin", "system"], "validation_rules": ["supported_job_type"], "lifecycle_states": ["queued", "processing", "completed", "failed"], "historical_versioning_needs": "medium", "downstream_impact_if_changed": ["data_ingestion_traceability"]},
-    {"id": "export_job", "fields": ["id", "agency_id", "export_type", "status", "requested_at", "completed_at", "artifact_ref"], "required_fields": ["id", "agency_id", "export_type", "status", "requested_at"], "optional_fields": ["completed_at", "artifact_ref"], "relationships": ["payroll_line_item", "billing_line_item", "weekly_form"], "where_used": ["import_export", "billing", "payroll"], "who_edits": ["healthcare_admin", "system"], "validation_rules": ["supported_export_type"], "lifecycle_states": ["queued", "processing", "completed", "failed"], "historical_versioning_needs": "medium", "downstream_impact_if_changed": ["financial_delivery_sla"]},
-    {"id": "parser_job", "fields": ["id", "agency_id", "source_ref", "mapping", "status", "errors"], "required_fields": ["id", "agency_id", "source_ref", "status"], "optional_fields": ["mapping", "errors"], "relationships": ["import_job"], "where_used": ["parser", "import_export"], "who_edits": ["healthcare_admin", "system"], "validation_rules": ["mapping_valid_before_commit"], "lifecycle_states": ["queued", "processing", "completed", "failed"], "historical_versioning_needs": "medium", "downstream_impact_if_changed": ["import_quality", "template_onboarding"]},
-    {"id": "notification", "fields": ["id", "agency_id", "recipient_id", "type", "title", "message", "target_route", "read_at", "created_at"], "required_fields": ["id", "agency_id", "recipient_id", "type", "title", "created_at"], "optional_fields": ["message", "target_route", "read_at"], "relationships": ["warning", "weekly_form"], "where_used": ["notification_system", "patient_portal", "dashboards"], "who_edits": ["system", "healthcare_admin_limited"], "validation_rules": ["recipient_scope_valid"], "lifecycle_states": ["unread", "read", "archived"], "historical_versioning_needs": "low", "downstream_impact_if_changed": ["reminder_delivery", "user_actionability"]}
+    {
+      "id": "user",
+      "fields": [
+        "id",
+        "email",
+        "display_name",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "required_fields": [
+        "id",
+        "email",
+        "status"
+      ],
+      "optional_fields": [
+        "display_name"
+      ],
+      "relationships": [
+        "role_assignment",
+        "agency"
+      ],
+      "where_used": [
+        "auth",
+        "dashboards",
+        "caregiver_management",
+        "case_manager_management"
+      ],
+      "who_edits": [
+        "super_admin",
+        "healthcare_admin",
+        "self_limited"
+      ],
+      "validation_rules": [
+        "email_format",
+        "active_status_for_login"
+      ],
+      "lifecycle_states": [
+        "invited",
+        "active",
+        "disabled"
+      ],
+      "historical_versioning_needs": "low",
+      "downstream_impact_if_changed": [
+        "auth",
+        "permissions",
+        "dashboard_access"
+      ]
+    },
+    {
+      "id": "session",
+      "fields": [
+        "id",
+        "user_id",
+        "email",
+        "scopes",
+        "selected_agency_id",
+        "active_role",
+        "issued_at",
+        "expires_at",
+        "token_ref"
+      ],
+      "required_fields": [
+        "user_id",
+        "email",
+        "scopes",
+        "issued_at"
+      ],
+      "optional_fields": [
+        "id",
+        "selected_agency_id",
+        "active_role",
+        "expires_at",
+        "token_ref"
+      ],
+      "relationships": [
+        "user",
+        "agency",
+        "role_assignment"
+      ],
+      "where_used": [
+        "auth",
+        "route_guards",
+        "agency_selector",
+        "role_selector"
+      ],
+      "who_edits": [
+        "system",
+        "authenticated_user_context"
+      ],
+      "validation_rules": [
+        "scopes_non_empty",
+        "active_role_must_exist_in_selected_agency",
+        "selected_agency_must_exist_in_scopes"
+      ],
+      "lifecycle_states": [
+        "active",
+        "expired",
+        "revoked"
+      ],
+      "historical_versioning_needs": "low",
+      "downstream_impact_if_changed": [
+        "all_protected_routes",
+        "role_based_redirects"
+      ]
+    },
+    {
+      "id": "agency",
+      "fields": [
+        "id",
+        "name",
+        "status",
+        "timezone",
+        "created_at"
+      ],
+      "required_fields": [
+        "id",
+        "name",
+        "status"
+      ],
+      "optional_fields": [
+        "timezone"
+      ],
+      "relationships": [
+        "user",
+        "patient",
+        "schedule"
+      ],
+      "where_used": [
+        "tenancy",
+        "dashboards",
+        "reports"
+      ],
+      "who_edits": [
+        "super_admin"
+      ],
+      "validation_rules": [
+        "name_unique"
+      ],
+      "lifecycle_states": [
+        "active",
+        "suspended"
+      ],
+      "historical_versioning_needs": "medium",
+      "downstream_impact_if_changed": [
+        "tenant_isolation",
+        "all_data_scope_queries"
+      ]
+    },
+    {
+      "id": "role_assignment",
+      "fields": [
+        "id",
+        "user_id",
+        "agency_id",
+        "role",
+        "is_default"
+      ],
+      "required_fields": [
+        "id",
+        "user_id",
+        "agency_id",
+        "role"
+      ],
+      "optional_fields": [
+        "is_default"
+      ],
+      "relationships": [
+        "user",
+        "agency"
+      ],
+      "where_used": [
+        "auth",
+        "role_management",
+        "route_guards"
+      ],
+      "who_edits": [
+        "super_admin",
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "allowed_role_values"
+      ],
+      "lifecycle_states": [
+        "active",
+        "revoked"
+      ],
+      "historical_versioning_needs": "medium",
+      "downstream_impact_if_changed": [
+        "authorization",
+        "dashboard_redirects"
+      ]
+    },
+    {
+      "id": "patient",
+      "fields": [
+        "id",
+        "agency_id",
+        "first_name",
+        "last_name",
+        "dob",
+        "medicaid_id",
+        "payer_program",
+        "assigned_caregiver_id",
+        "assigned_case_manager_id",
+        "care_plan_template",
+        "status",
+        "created_at",
+        "created_by"
+      ],
+      "required_fields": [
+        "id",
+        "agency_id",
+        "first_name",
+        "last_name",
+        "status",
+        "created_at",
+        "created_by"
+      ],
+      "optional_fields": [
+        "dob",
+        "medicaid_id",
+        "payer_program",
+        "assigned_caregiver_id",
+        "assigned_case_manager_id",
+        "care_plan_template"
+      ],
+      "relationships": [
+        "patient_address",
+        "patient_identifiers",
+        "patient_authorization",
+        "care_plan"
+      ],
+      "where_used": [
+        "patient_admission",
+        "patient_management",
+        "scheduling",
+        "reports"
+      ],
+      "who_edits": [
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "agency_scope_required",
+        "medicaid_id_unique_by_agency"
+      ],
+      "lifecycle_states": [
+        "draft",
+        "active",
+        "inactive",
+        "discharged"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "scheduling",
+        "weekly_forms",
+        "billing",
+        "payroll",
+        "reports"
+      ]
+    },
+    {
+      "id": "patient_address",
+      "fields": [
+        "id",
+        "patient_id",
+        "line1",
+        "city",
+        "state",
+        "zip",
+        "lat",
+        "lng"
+      ],
+      "required_fields": [
+        "id",
+        "patient_id",
+        "line1",
+        "city",
+        "state",
+        "zip"
+      ],
+      "optional_fields": [
+        "lat",
+        "lng"
+      ],
+      "relationships": [
+        "patient"
+      ],
+      "where_used": [
+        "patient_admission",
+        "gps_evv"
+      ],
+      "who_edits": [
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "postal_code_format"
+      ],
+      "lifecycle_states": [
+        "active",
+        "historical"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "gps_mismatch_warnings",
+        "visit_context"
+      ]
+    },
+    {
+      "id": "patient_identifiers",
+      "fields": [
+        "id",
+        "patient_id",
+        "medicaid_id",
+        "internal_id"
+      ],
+      "required_fields": [
+        "id",
+        "patient_id"
+      ],
+      "optional_fields": [
+        "medicaid_id",
+        "internal_id"
+      ],
+      "relationships": [
+        "patient"
+      ],
+      "where_used": [
+        "patient_admission",
+        "billing",
+        "exports"
+      ],
+      "who_edits": [
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "medicaid_id_unique_by_agency",
+        "internal_id_unique_by_agency"
+      ],
+      "lifecycle_states": [
+        "active",
+        "historical"
+      ],
+      "historical_versioning_needs": "medium",
+      "downstream_impact_if_changed": [
+        "claim_exports",
+        "patient_lookup"
+      ]
+    },
+    {
+      "id": "patient_authorization",
+      "fields": [
+        "id",
+        "patient_id",
+        "effective_start",
+        "effective_end",
+        "authorized_daily_hours",
+        "payer_program"
+      ],
+      "required_fields": [
+        "id",
+        "patient_id",
+        "effective_start",
+        "authorized_daily_hours"
+      ],
+      "optional_fields": [
+        "effective_end",
+        "payer_program"
+      ],
+      "relationships": [
+        "patient",
+        "authorization_rule_version"
+      ],
+      "where_used": [
+        "patient_admission",
+        "weekly_forms",
+        "warnings_exceptions",
+        "billing"
+      ],
+      "who_edits": [
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "non_negative_hours",
+        "non_overlapping_versions"
+      ],
+      "lifecycle_states": [
+        "pending",
+        "active",
+        "expired"
+      ],
+      "historical_versioning_needs": "critical",
+      "downstream_impact_if_changed": [
+        "hours_validation",
+        "billing_mode"
+      ]
+    },
+    {
+      "id": "authorization_rule_version",
+      "fields": [
+        "id",
+        "authorization_id",
+        "effective_start",
+        "effective_end",
+        "rule_payload"
+      ],
+      "required_fields": [
+        "id",
+        "authorization_id",
+        "effective_start",
+        "rule_payload"
+      ],
+      "optional_fields": [
+        "effective_end"
+      ],
+      "relationships": [
+        "patient_authorization"
+      ],
+      "where_used": [
+        "weekly_forms",
+        "validation_engine"
+      ],
+      "who_edits": [
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "no_retroactive_breakage"
+      ],
+      "lifecycle_states": [
+        "draft",
+        "active",
+        "superseded"
+      ],
+      "historical_versioning_needs": "critical",
+      "downstream_impact_if_changed": [
+        "weekly_validation",
+        "audit_defensibility"
+      ]
+    },
+    {
+      "id": "patient_caregiver_assignment",
+      "fields": [
+        "id",
+        "patient_id",
+        "caregiver_id",
+        "effective_start",
+        "effective_end"
+      ],
+      "required_fields": [
+        "id",
+        "patient_id",
+        "caregiver_id",
+        "effective_start"
+      ],
+      "optional_fields": [
+        "effective_end"
+      ],
+      "relationships": [
+        "patient",
+        "user"
+      ],
+      "where_used": [
+        "scheduling",
+        "dashboard_caregiver"
+      ],
+      "who_edits": [
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "no_duplicate_active_assignment"
+      ],
+      "lifecycle_states": [
+        "active",
+        "ended"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "visit_assignments",
+        "submission_ownership"
+      ]
+    },
+    {
+      "id": "patient_case_manager_assignment",
+      "fields": [
+        "id",
+        "patient_id",
+        "case_manager_id",
+        "effective_start",
+        "effective_end"
+      ],
+      "required_fields": [
+        "id",
+        "patient_id",
+        "case_manager_id",
+        "effective_start"
+      ],
+      "optional_fields": [
+        "effective_end"
+      ],
+      "relationships": [
+        "patient",
+        "user"
+      ],
+      "where_used": [
+        "patient_management",
+        "exceptions"
+      ],
+      "who_edits": [
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "single_primary_case_manager_policy"
+      ],
+      "lifecycle_states": [
+        "active",
+        "ended"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "exception_visibility",
+        "care_continuity"
+      ]
+    },
+    {
+      "id": "care_plan",
+      "fields": [
+        "id",
+        "patient_id",
+        "name",
+        "effective_start",
+        "effective_end"
+      ],
+      "required_fields": [
+        "id",
+        "patient_id",
+        "name",
+        "effective_start"
+      ],
+      "optional_fields": [
+        "effective_end"
+      ],
+      "relationships": [
+        "care_plan_task",
+        "patient"
+      ],
+      "where_used": [
+        "patient_admission",
+        "daily_entries"
+      ],
+      "who_edits": [
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "validation_rules": [
+        "effective_window_valid"
+      ],
+      "lifecycle_states": [
+        "draft",
+        "active",
+        "archived"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "task_checklists",
+        "compliance_reporting"
+      ]
+    },
+    {
+      "id": "care_plan_task",
+      "fields": [
+        "id",
+        "care_plan_id",
+        "label",
+        "required",
+        "sort_order"
+      ],
+      "required_fields": [
+        "id",
+        "care_plan_id",
+        "label"
+      ],
+      "optional_fields": [
+        "required",
+        "sort_order"
+      ],
+      "relationships": [
+        "care_plan"
+      ],
+      "where_used": [
+        "daily_entries",
+        "weekly_forms"
+      ],
+      "who_edits": [
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "validation_rules": [
+        "label_not_empty"
+      ],
+      "lifecycle_states": [
+        "active",
+        "inactive"
+      ],
+      "historical_versioning_needs": "medium",
+      "downstream_impact_if_changed": [
+        "daily_form_completion"
+      ]
+    },
+    {
+      "id": "schedule",
+      "fields": [
+        "id",
+        "agency_id",
+        "patient_id",
+        "caregiver_id",
+        "start_date",
+        "end_date",
+        "recurrence_rule",
+        "planned_start_time",
+        "planned_end_time",
+        "allocated_daily_hours"
+      ],
+      "required_fields": [
+        "id",
+        "agency_id",
+        "patient_id",
+        "caregiver_id",
+        "start_date"
+      ],
+      "optional_fields": [
+        "end_date",
+        "recurrence_rule",
+        "planned_start_time",
+        "planned_end_time",
+        "allocated_daily_hours"
+      ],
+      "relationships": [
+        "schedule_occurrence",
+        "patient",
+        "user"
+      ],
+      "where_used": [
+        "scheduling",
+        "caregiver_dashboard",
+        "weekly_forms"
+      ],
+      "who_edits": [
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "no_overlap_for_caregiver",
+        "positive_duration"
+      ],
+      "lifecycle_states": [
+        "draft",
+        "active",
+        "paused",
+        "ended"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "visit_generation",
+        "hours_validation",
+        "warnings"
+      ]
+    },
+    {
+      "id": "schedule_occurrence",
+      "fields": [
+        "id",
+        "schedule_id",
+        "date",
+        "planned_start",
+        "planned_end",
+        "status"
+      ],
+      "required_fields": [
+        "id",
+        "schedule_id",
+        "date"
+      ],
+      "optional_fields": [
+        "planned_start",
+        "planned_end",
+        "status"
+      ],
+      "relationships": [
+        "schedule",
+        "daily_entry",
+        "time_entry"
+      ],
+      "where_used": [
+        "caregiver_daily_workflow",
+        "calendar"
+      ],
+      "who_edits": [
+        "system",
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "generated_from_schedule"
+      ],
+      "lifecycle_states": [
+        "pending",
+        "in_progress",
+        "completed",
+        "missed",
+        "cancelled"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "clock_in_out_flow",
+        "submission_tracking"
+      ]
+    },
+    {
+      "id": "weekly_form",
+      "fields": [
+        "id",
+        "agency_id",
+        "patient_id",
+        "caregiver_id",
+        "week_start",
+        "week_end",
+        "status",
+        "copied_from_previous_day",
+        "copied_from_previous_week",
+        "review_required_before_submit"
+      ],
+      "required_fields": [
+        "id",
+        "agency_id",
+        "patient_id",
+        "caregiver_id",
+        "week_start",
+        "status"
+      ],
+      "optional_fields": [
+        "week_end",
+        "copied_from_previous_day",
+        "copied_from_previous_week",
+        "review_required_before_submit"
+      ],
+      "relationships": [
+        "daily_entry",
+        "signature",
+        "revision",
+        "warning"
+      ],
+      "where_used": [
+        "weekly_forms",
+        "signatures",
+        "revision_history",
+        "reports",
+        "billing",
+        "payroll"
+      ],
+      "who_edits": [
+        "caregiver",
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "required_signatures_before_final_approval",
+        "authorization_check"
+      ],
+      "lifecycle_states": [
+        "draft",
+        "submitted",
+        "under_review",
+        "approved",
+        "revised"
+      ],
+      "historical_versioning_needs": "critical",
+      "downstream_impact_if_changed": [
+        "payroll",
+        "billing",
+        "exports",
+        "audit"
+      ]
+    },
+    {
+      "id": "daily_entry",
+      "fields": [
+        "id",
+        "weekly_form_id",
+        "schedule_occurrence_id",
+        "date",
+        "tasks",
+        "notes",
+        "draft_status",
+        "copy_source"
+      ],
+      "required_fields": [
+        "id",
+        "weekly_form_id",
+        "date"
+      ],
+      "optional_fields": [
+        "schedule_occurrence_id",
+        "tasks",
+        "notes",
+        "draft_status",
+        "copy_source"
+      ],
+      "relationships": [
+        "weekly_form",
+        "time_entry",
+        "gps_event"
+      ],
+      "where_used": [
+        "daily_entries",
+        "weekly_forms",
+        "warnings_exceptions"
+      ],
+      "who_edits": [
+        "caregiver",
+        "healthcare_admin_limited"
+      ],
+      "validation_rules": [
+        "required_fields_per_template",
+        "copy_review_rule"
+      ],
+      "lifecycle_states": [
+        "draft",
+        "completed",
+        "locked"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "weekly_submission_quality",
+        "warning_generation"
+      ]
+    },
+    {
+      "id": "time_entry",
+      "fields": [
+        "id",
+        "daily_entry_id",
+        "clock_in_at",
+        "clock_out_at",
+        "duration_minutes",
+        "manual_override_reason"
+      ],
+      "required_fields": [
+        "id",
+        "daily_entry_id",
+        "clock_in_at"
+      ],
+      "optional_fields": [
+        "clock_out_at",
+        "duration_minutes",
+        "manual_override_reason"
+      ],
+      "relationships": [
+        "daily_entry",
+        "gps_event"
+      ],
+      "where_used": [
+        "gps_evv",
+        "weekly_forms",
+        "payroll",
+        "billing"
+      ],
+      "who_edits": [
+        "caregiver",
+        "healthcare_admin_limited"
+      ],
+      "validation_rules": [
+        "clock_out_after_clock_in",
+        "override_reason_when_manual"
+      ],
+      "lifecycle_states": [
+        "open",
+        "closed",
+        "flagged"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "hours_totals",
+        "payroll_calculation",
+        "billing_calculation"
+      ]
+    },
+    {
+      "id": "gps_event",
+      "fields": [
+        "id",
+        "time_entry_id",
+        "event_type",
+        "captured_at",
+        "lat",
+        "lng",
+        "accuracy",
+        "confidence",
+        "fallback_context"
+      ],
+      "required_fields": [
+        "id",
+        "time_entry_id",
+        "event_type",
+        "captured_at"
+      ],
+      "optional_fields": [
+        "lat",
+        "lng",
+        "accuracy",
+        "confidence",
+        "fallback_context"
+      ],
+      "relationships": [
+        "time_entry",
+        "warning"
+      ],
+      "where_used": [
+        "gps_evv",
+        "warnings_exceptions",
+        "anomaly_hooks"
+      ],
+      "who_edits": [
+        "system",
+        "caregiver"
+      ],
+      "validation_rules": [
+        "event_type_in_out_only",
+        "geo_within_policy_or_flag"
+      ],
+      "lifecycle_states": [
+        "captured",
+        "synced",
+        "flagged"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "evv_compliance",
+        "exception_workflow"
+      ]
+    },
+    {
+      "id": "signature",
+      "fields": [
+        "id",
+        "weekly_form_id",
+        "signer_role",
+        "signer_id",
+        "signed_at",
+        "method",
+        "artifact_ref"
+      ],
+      "required_fields": [
+        "id",
+        "weekly_form_id",
+        "signer_role",
+        "signed_at"
+      ],
+      "optional_fields": [
+        "signer_id",
+        "method",
+        "artifact_ref"
+      ],
+      "relationships": [
+        "weekly_form",
+        "warning"
+      ],
+      "where_used": [
+        "signatures",
+        "weekly_submission",
+        "pdf_export"
+      ],
+      "who_edits": [
+        "caregiver",
+        "patient"
+      ],
+      "validation_rules": [
+        "one_active_signature_per_role_per_week",
+        "no_signature_copy"
+      ],
+      "lifecycle_states": [
+        "missing",
+        "captured",
+        "invalidated"
+      ],
+      "historical_versioning_needs": "critical",
+      "downstream_impact_if_changed": [
+        "submission_validity",
+        "audit",
+        "legal_defensibility"
+      ]
+    },
+    {
+      "id": "warning",
+      "fields": [
+        "id",
+        "type",
+        "severity",
+        "agency_id",
+        "patient_id",
+        "caregiver_id",
+        "week_or_day_ref",
+        "reason",
+        "target_route",
+        "target_section",
+        "assigned_reviewer_id",
+        "status",
+        "resolution_notes"
+      ],
+      "required_fields": [
+        "id",
+        "type",
+        "severity",
+        "agency_id",
+        "status",
+        "reason"
+      ],
+      "optional_fields": [
+        "patient_id",
+        "caregiver_id",
+        "week_or_day_ref",
+        "target_route",
+        "target_section",
+        "assigned_reviewer_id",
+        "resolution_notes"
+      ],
+      "relationships": [
+        "exception",
+        "weekly_form",
+        "daily_entry"
+      ],
+      "where_used": [
+        "warnings_exceptions",
+        "dashboards",
+        "notifications",
+        "reports"
+      ],
+      "who_edits": [
+        "system",
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "validation_rules": [
+        "type_enumeration",
+        "status_transition_rules"
+      ],
+      "lifecycle_states": [
+        "open",
+        "in_review",
+        "resolved",
+        "dismissed"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "workflow_navigation",
+        "compliance_reporting"
+      ]
+    },
+    {
+      "id": "exception",
+      "fields": [
+        "id",
+        "warning_id",
+        "owner_role",
+        "owner_id",
+        "status",
+        "notes"
+      ],
+      "required_fields": [
+        "id",
+        "warning_id",
+        "status"
+      ],
+      "optional_fields": [
+        "owner_role",
+        "owner_id",
+        "notes"
+      ],
+      "relationships": [
+        "warning",
+        "revision"
+      ],
+      "where_used": [
+        "warnings_exceptions",
+        "admin_review",
+        "case_manager_review"
+      ],
+      "who_edits": [
+        "healthcare_admin",
+        "case_manager"
+      ],
+      "validation_rules": [
+        "warning_exists",
+        "status_transition_rules"
+      ],
+      "lifecycle_states": [
+        "open",
+        "in_review",
+        "resolved"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "resolution_sla",
+        "audit"
+      ]
+    },
+    {
+      "id": "revision",
+      "fields": [
+        "id",
+        "weekly_form_id",
+        "revision_number",
+        "changed_by",
+        "changed_at",
+        "change_reason",
+        "diff_payload"
+      ],
+      "required_fields": [
+        "id",
+        "weekly_form_id",
+        "revision_number",
+        "changed_by",
+        "changed_at"
+      ],
+      "optional_fields": [
+        "change_reason",
+        "diff_payload"
+      ],
+      "relationships": [
+        "weekly_form",
+        "exception"
+      ],
+      "where_used": [
+        "revision_history",
+        "admin_review",
+        "pdf_export"
+      ],
+      "who_edits": [
+        "healthcare_admin",
+        "system"
+      ],
+      "validation_rules": [
+        "immutable_revision_entries",
+        "increment_revision_number"
+      ],
+      "lifecycle_states": [
+        "recorded"
+      ],
+      "historical_versioning_needs": "critical",
+      "downstream_impact_if_changed": [
+        "auditability",
+        "legal_traceability"
+      ]
+    },
+    {
+      "id": "form_template",
+      "fields": [
+        "id",
+        "agency_id",
+        "name",
+        "group",
+        "payer_scope",
+        "status"
+      ],
+      "required_fields": [
+        "id",
+        "agency_id",
+        "name",
+        "status"
+      ],
+      "optional_fields": [
+        "group",
+        "payer_scope"
+      ],
+      "relationships": [
+        "form_template_version",
+        "weekly_form"
+      ],
+      "where_used": [
+        "form_builder",
+        "patient_admission"
+      ],
+      "who_edits": [
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "name_unique_within_agency"
+      ],
+      "lifecycle_states": [
+        "draft",
+        "active",
+        "archived"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "rendered_forms",
+        "validation_rules"
+      ]
+    },
+    {
+      "id": "form_template_version",
+      "fields": [
+        "id",
+        "template_id",
+        "version",
+        "effective_start",
+        "effective_end",
+        "fields_payload"
+      ],
+      "required_fields": [
+        "id",
+        "template_id",
+        "version",
+        "effective_start",
+        "fields_payload"
+      ],
+      "optional_fields": [
+        "effective_end"
+      ],
+      "relationships": [
+        "form_template"
+      ],
+      "where_used": [
+        "form_builder",
+        "weekly_forms",
+        "pdf_export"
+      ],
+      "who_edits": [
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "no_overlapping_effective_ranges"
+      ],
+      "lifecycle_states": [
+        "draft",
+        "active",
+        "superseded"
+      ],
+      "historical_versioning_needs": "critical",
+      "downstream_impact_if_changed": [
+        "backward_compatibility",
+        "submission_rendering"
+      ]
+    },
+    {
+      "id": "payroll_rule",
+      "fields": [
+        "id",
+        "agency_id",
+        "name",
+        "rule_type",
+        "rate",
+        "effective_start",
+        "effective_end"
+      ],
+      "required_fields": [
+        "id",
+        "agency_id",
+        "name",
+        "rule_type",
+        "rate",
+        "effective_start"
+      ],
+      "optional_fields": [
+        "effective_end"
+      ],
+      "relationships": [
+        "payroll_line_item"
+      ],
+      "where_used": [
+        "payroll"
+      ],
+      "who_edits": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "validation_rules": [
+        "rate_non_negative",
+        "effective_window_valid"
+      ],
+      "lifecycle_states": [
+        "active",
+        "superseded"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "payroll_totals",
+        "exports"
+      ]
+    },
+    {
+      "id": "payroll_line_item",
+      "fields": [
+        "id",
+        "weekly_form_id",
+        "caregiver_id",
+        "pay_rule_id",
+        "minutes",
+        "amount",
+        "status"
+      ],
+      "required_fields": [
+        "id",
+        "weekly_form_id",
+        "caregiver_id",
+        "pay_rule_id",
+        "minutes",
+        "amount"
+      ],
+      "optional_fields": [
+        "status"
+      ],
+      "relationships": [
+        "weekly_form",
+        "payroll_rule"
+      ],
+      "where_used": [
+        "payroll",
+        "reports",
+        "exports"
+      ],
+      "who_edits": [
+        "system",
+        "healthcare_admin_approval"
+      ],
+      "validation_rules": [
+        "approved_form_required"
+      ],
+      "lifecycle_states": [
+        "generated",
+        "approved",
+        "exported"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "finance_reports",
+        "payroll_exports"
+      ]
+    },
+    {
+      "id": "billing_rule",
+      "fields": [
+        "id",
+        "agency_id",
+        "name",
+        "mode",
+        "service_code",
+        "rate",
+        "effective_start",
+        "effective_end"
+      ],
+      "required_fields": [
+        "id",
+        "agency_id",
+        "name",
+        "mode",
+        "effective_start"
+      ],
+      "optional_fields": [
+        "service_code",
+        "rate",
+        "effective_end"
+      ],
+      "relationships": [
+        "billing_line_item",
+        "patient_authorization"
+      ],
+      "where_used": [
+        "billing"
+      ],
+      "who_edits": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "validation_rules": [
+        "mode_supported",
+        "effective_window_valid"
+      ],
+      "lifecycle_states": [
+        "active",
+        "superseded"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "claim_accuracy",
+        "billing_exports"
+      ]
+    },
+    {
+      "id": "billing_line_item",
+      "fields": [
+        "id",
+        "weekly_form_id",
+        "patient_id",
+        "billing_rule_id",
+        "units",
+        "amount",
+        "status"
+      ],
+      "required_fields": [
+        "id",
+        "weekly_form_id",
+        "patient_id",
+        "billing_rule_id",
+        "units"
+      ],
+      "optional_fields": [
+        "amount",
+        "status"
+      ],
+      "relationships": [
+        "weekly_form",
+        "billing_rule",
+        "patient"
+      ],
+      "where_used": [
+        "billing",
+        "reports",
+        "exports"
+      ],
+      "who_edits": [
+        "system",
+        "healthcare_admin_approval"
+      ],
+      "validation_rules": [
+        "approved_form_required",
+        "service_code_resolved"
+      ],
+      "lifecycle_states": [
+        "generated",
+        "approved",
+        "exported"
+      ],
+      "historical_versioning_needs": "high",
+      "downstream_impact_if_changed": [
+        "revenue_reporting",
+        "payer_submissions"
+      ]
+    },
+    {
+      "id": "report_definition",
+      "fields": [
+        "id",
+        "agency_scope",
+        "name",
+        "metric_set",
+        "filters_schema"
+      ],
+      "required_fields": [
+        "id",
+        "name",
+        "metric_set"
+      ],
+      "optional_fields": [
+        "agency_scope",
+        "filters_schema"
+      ],
+      "relationships": [
+        "payroll_line_item",
+        "billing_line_item",
+        "warning"
+      ],
+      "where_used": [
+        "reports",
+        "dashboards"
+      ],
+      "who_edits": [
+        "super_admin",
+        "healthcare_admin"
+      ],
+      "validation_rules": [
+        "metric_set_supported"
+      ],
+      "lifecycle_states": [
+        "active",
+        "archived"
+      ],
+      "historical_versioning_needs": "medium",
+      "downstream_impact_if_changed": [
+        "analytics_consistency"
+      ]
+    },
+    {
+      "id": "import_job",
+      "fields": [
+        "id",
+        "agency_id",
+        "job_type",
+        "file_ref",
+        "status",
+        "created_at",
+        "completed_at",
+        "summary"
+      ],
+      "required_fields": [
+        "id",
+        "agency_id",
+        "job_type",
+        "file_ref",
+        "status",
+        "created_at"
+      ],
+      "optional_fields": [
+        "completed_at",
+        "summary"
+      ],
+      "relationships": [
+        "parser_job"
+      ],
+      "where_used": [
+        "import_export",
+        "file_center"
+      ],
+      "who_edits": [
+        "healthcare_admin",
+        "system"
+      ],
+      "validation_rules": [
+        "supported_job_type"
+      ],
+      "lifecycle_states": [
+        "queued",
+        "processing",
+        "completed",
+        "failed"
+      ],
+      "historical_versioning_needs": "medium",
+      "downstream_impact_if_changed": [
+        "data_ingestion_traceability"
+      ]
+    },
+    {
+      "id": "export_job",
+      "fields": [
+        "id",
+        "agency_id",
+        "export_type",
+        "status",
+        "requested_at",
+        "completed_at",
+        "artifact_ref"
+      ],
+      "required_fields": [
+        "id",
+        "agency_id",
+        "export_type",
+        "status",
+        "requested_at"
+      ],
+      "optional_fields": [
+        "completed_at",
+        "artifact_ref"
+      ],
+      "relationships": [
+        "payroll_line_item",
+        "billing_line_item",
+        "weekly_form"
+      ],
+      "where_used": [
+        "import_export",
+        "billing",
+        "payroll"
+      ],
+      "who_edits": [
+        "healthcare_admin",
+        "system"
+      ],
+      "validation_rules": [
+        "supported_export_type"
+      ],
+      "lifecycle_states": [
+        "queued",
+        "processing",
+        "completed",
+        "failed"
+      ],
+      "historical_versioning_needs": "medium",
+      "downstream_impact_if_changed": [
+        "financial_delivery_sla"
+      ]
+    },
+    {
+      "id": "parser_job",
+      "fields": [
+        "id",
+        "agency_id",
+        "source_ref",
+        "mapping",
+        "status",
+        "errors"
+      ],
+      "required_fields": [
+        "id",
+        "agency_id",
+        "source_ref",
+        "status"
+      ],
+      "optional_fields": [
+        "mapping",
+        "errors"
+      ],
+      "relationships": [
+        "import_job"
+      ],
+      "where_used": [
+        "parser",
+        "import_export"
+      ],
+      "who_edits": [
+        "healthcare_admin",
+        "system"
+      ],
+      "validation_rules": [
+        "mapping_valid_before_commit"
+      ],
+      "lifecycle_states": [
+        "queued",
+        "processing",
+        "completed",
+        "failed"
+      ],
+      "historical_versioning_needs": "medium",
+      "downstream_impact_if_changed": [
+        "import_quality",
+        "template_onboarding"
+      ]
+    },
+    {
+      "id": "notification",
+      "fields": [
+        "id",
+        "agency_id",
+        "recipient_id",
+        "type",
+        "title",
+        "message",
+        "target_route",
+        "read_at",
+        "created_at"
+      ],
+      "required_fields": [
+        "id",
+        "agency_id",
+        "recipient_id",
+        "type",
+        "title",
+        "created_at"
+      ],
+      "optional_fields": [
+        "message",
+        "target_route",
+        "read_at"
+      ],
+      "relationships": [
+        "warning",
+        "weekly_form"
+      ],
+      "where_used": [
+        "notification_system",
+        "patient_portal",
+        "dashboards"
+      ],
+      "who_edits": [
+        "system",
+        "healthcare_admin_limited"
+      ],
+      "validation_rules": [
+        "recipient_scope_valid"
+      ],
+      "lifecycle_states": [
+        "unread",
+        "read",
+        "archived"
+      ],
+      "historical_versioning_needs": "low",
+      "downstream_impact_if_changed": [
+        "reminder_delivery",
+        "user_actionability"
+      ]
+    }
   ]
 }

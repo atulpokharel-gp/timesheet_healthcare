@@ -1,29 +1,710 @@
 {
   "metadata": {
-    "version": "0.4.0-pw003-admission-m1",
-    "last_updated": "2026-03-28T03:00:00Z"
+    "version": "0.5.2-pw003-route-surface-m2b",
+    "last_updated": "2026-03-28T10:10:00Z"
   },
   "routes": [
-    {"route_path": "/", "page_component": "LandingPage", "layout": "MarketingLayout", "auth_requirement": "public", "allowed_roles": ["public"], "agency_selector_requirement": false, "role_selector_requirement": false, "parent_flow": "wf_landing_to_portal", "child_flow": "auth_entry", "linked_entities": [], "data_dependencies": ["marketing_content"], "status": "scaffolded_foundation", "disconnected_risk": "low", "notes": "Hero and feature sections scaffolded; content depth pending"},
-    {"route_path": "/auth/login", "page_component": "LoginPage", "layout": "AuthLayout", "auth_requirement": "public", "allowed_roles": ["public"], "agency_selector_requirement": false, "role_selector_requirement": false, "parent_flow": "wf_landing_to_portal", "child_flow": "post_login_routing", "linked_entities": ["user", "session"], "data_dependencies": ["auth_api"], "status": "implemented_mock", "disconnected_risk": "medium", "notes": "Server action login with seeded credentials and cookie session"},
-    {"route_path": "/select-agency", "page_component": "AgencySelectorPage", "layout": "AppShell", "auth_requirement": "required", "allowed_roles": ["super_admin", "healthcare_admin", "case_manager", "caregiver", "patient"], "agency_selector_requirement": true, "role_selector_requirement": false, "parent_flow": "wf_landing_to_portal", "child_flow": "role_selection", "linked_entities": ["agency", "role_assignment"], "data_dependencies": ["agency_api"], "status": "implemented_mock", "disconnected_risk": "medium", "notes": "Server action persists selected agency in session cookie"},
-    {"route_path": "/select-role", "page_component": "RoleSelectorPage", "layout": "AppShell", "auth_requirement": "required", "allowed_roles": ["super_admin", "healthcare_admin", "case_manager", "caregiver", "patient"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_landing_to_portal", "child_flow": "dashboard_redirect", "linked_entities": ["role_assignment"], "data_dependencies": ["rbac_api"], "status": "implemented_mock", "disconnected_risk": "medium", "notes": "Server action persists active role and redirects by role map"},
-    {"route_path": "/dashboard/super-admin", "page_component": "SuperAdminDashboardPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["super_admin"], "agency_selector_requirement": false, "role_selector_requirement": true, "parent_flow": "wf_landing_to_portal", "child_flow": "wf_admin_revision_and_exports", "linked_entities": ["agency", "warning", "report_definition"], "data_dependencies": ["dashboard_api", "report_api"], "status": "guarded_scaffold", "disconnected_risk": "medium", "notes": "Middleware enforces active session and allowed role"},
-    {"route_path": "/dashboard/admin", "page_component": "HealthcareAdminDashboardPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["healthcare_admin"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_landing_to_portal", "child_flow": "wf_patient_admission", "linked_entities": ["patient", "weekly_form", "warning"], "data_dependencies": ["dashboard_api", "patient_api"], "status": "partially_implemented", "disconnected_risk": "medium", "notes": "Dashboard includes patient KPI cards and admission action links"},
-    {"route_path": "/dashboard/admin/patients", "page_component": "AdminPatientsPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["healthcare_admin"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_patient_admission", "child_flow": "patient_detail", "linked_entities": ["patient", "patient_identifiers", "patient_caregiver_assignment", "patient_case_manager_assignment"], "data_dependencies": ["patient_api"], "status": "implemented_mvp", "disconnected_risk": "medium", "notes": "Agency-scoped patient list backed by in-memory module store"},
-    {"route_path": "/dashboard/case-manager", "page_component": "CaseManagerDashboardPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["case_manager"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_landing_to_portal", "child_flow": "exception_review", "linked_entities": ["patient", "exception", "warning"], "data_dependencies": ["dashboard_api", "warning_api"], "status": "guarded_scaffold", "disconnected_risk": "medium", "notes": "Middleware enforces active session and allowed role"},
-    {"route_path": "/dashboard/caregiver", "page_component": "CaregiverDashboardPage", "layout": "MobileOptimizedLayout", "auth_requirement": "required", "allowed_roles": ["caregiver"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_landing_to_portal", "child_flow": "wf_caregiver_daily_visit", "linked_entities": ["schedule_occurrence", "weekly_form", "warning"], "data_dependencies": ["dashboard_api", "schedule_api"], "status": "guarded_scaffold", "disconnected_risk": "medium", "notes": "Middleware enforces active session and allowed role"},
-    {"route_path": "/portal/patient", "page_component": "PatientPortalDashboardPage", "layout": "PatientPortalLayout", "auth_requirement": "required", "allowed_roles": ["patient"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_landing_to_portal", "child_flow": "wf_weekly_submission_and_signatures", "linked_entities": ["patient", "weekly_form", "signature", "notification"], "data_dependencies": ["patient_portal_api"], "status": "guarded_scaffold", "disconnected_risk": "medium", "notes": "Middleware enforces active session and allowed role"},
-    {"route_path": "/dashboard/admin/patients/new", "page_component": "PatientAdmissionPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["healthcare_admin"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_patient_admission", "child_flow": "patient_activation", "linked_entities": ["patient", "patient_identifiers", "patient_authorization", "care_plan"], "data_dependencies": ["patient_api", "form_builder_api"], "status": "implemented_mvp", "disconnected_risk": "medium", "notes": "Admission form validates core demographics and creates patient record"},
-    {"route_path": "/dashboard/admin/patients/:id", "page_component": "PatientDetailPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["healthcare_admin"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_patient_admission", "child_flow": "patient_activation", "linked_entities": ["patient", "patient_identifiers", "patient_caregiver_assignment", "patient_case_manager_assignment", "care_plan"], "data_dependencies": ["patient_api"], "status": "implemented_mvp", "disconnected_risk": "medium", "notes": "Patient detail view enforces selected-agency boundary"},
-    {"route_path": "/dashboard/caregiver/visits/:occurrenceId", "page_component": "CaregiverVisitPage", "layout": "MobileOptimizedLayout", "auth_requirement": "required", "allowed_roles": ["caregiver"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_caregiver_daily_visit", "child_flow": "daily_visit_submit_or_draft", "linked_entities": ["schedule_occurrence", "daily_entry", "time_entry", "gps_event"], "data_dependencies": ["timesheet_api", "evv_api"], "status": "planned", "disconnected_risk": "high", "notes": "Clock in/out, task checklists, notes, draft"},
-    {"route_path": "/dashboard/caregiver/week/:weekId", "page_component": "CaregiverWeeklyPage", "layout": "MobileOptimizedLayout", "auth_requirement": "required", "allowed_roles": ["caregiver"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_weekly_submission_and_signatures", "child_flow": "weekly_submit", "linked_entities": ["weekly_form", "daily_entry", "signature", "warning"], "data_dependencies": ["timesheet_api", "signature_api", "warning_api"], "status": "planned", "disconnected_risk": "high", "notes": "Copy previous day/week, totals, warnings, submit"},
-    {"route_path": "/portal/patient/signatures", "page_component": "PatientSignaturePage", "layout": "PatientPortalLayout", "auth_requirement": "required", "allowed_roles": ["patient"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_weekly_submission_and_signatures", "child_flow": "signature_complete", "linked_entities": ["weekly_form", "signature"], "data_dependencies": ["signature_api"], "status": "planned", "disconnected_risk": "high", "notes": "Must deep-link from warning"},
-    {"route_path": "/dashboard/admin/exceptions", "page_component": "AdminExceptionPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["healthcare_admin"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_admin_revision_and_exports", "child_flow": "exception_resolution", "linked_entities": ["warning", "exception", "revision"], "data_dependencies": ["warning_api", "revision_api"], "status": "planned", "disconnected_risk": "high", "notes": "Open, in-review, resolved workflow"},
-    {"route_path": "/dashboard/case-manager/exceptions", "page_component": "CaseManagerExceptionPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["case_manager"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_weekly_submission_and_signatures", "child_flow": "exception_resolution", "linked_entities": ["warning", "exception"], "data_dependencies": ["warning_api"], "status": "planned", "disconnected_risk": "high", "notes": "Case manager visibility of assigned exceptions"},
-    {"route_path": "/dashboard/admin/submissions", "page_component": "SubmissionReviewPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["healthcare_admin"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_admin_revision_and_exports", "child_flow": "revision_creation", "linked_entities": ["weekly_form", "revision", "warning"], "data_dependencies": ["timesheet_api", "revision_api"], "status": "planned", "disconnected_risk": "high", "notes": "Must preserve immutable submission history"},
-    {"route_path": "/dashboard/admin/form-builder", "page_component": "FormBuilderPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["healthcare_admin"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_patient_admission", "child_flow": "template_assignment", "linked_entities": ["form_template", "form_template_version"], "data_dependencies": ["form_builder_api"], "status": "planned", "disconnected_risk": "medium", "notes": "Payer-specific templates and versioning"},
-    {"route_path": "/dashboard/admin/file-center", "page_component": "FileCenterPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["healthcare_admin", "super_admin"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_admin_revision_and_exports", "child_flow": "import_export_jobs", "linked_entities": ["import_job", "export_job", "parser_job"], "data_dependencies": ["file_center_api", "parser_api"], "status": "planned", "disconnected_risk": "medium", "notes": "Import/export/parser orchestration"},
-    {"route_path": "/dashboard/admin/reports", "page_component": "AdminReportsPage", "layout": "DashboardLayout", "auth_requirement": "required", "allowed_roles": ["healthcare_admin", "super_admin"], "agency_selector_requirement": true, "role_selector_requirement": true, "parent_flow": "wf_admin_revision_and_exports", "child_flow": "report_drilldown", "linked_entities": ["report_definition", "warning", "payroll_line_item", "billing_line_item"], "data_dependencies": ["report_api"], "status": "planned", "disconnected_risk": "medium", "notes": "Operational and financial KPIs"}
+    {
+      "route_path": "/",
+      "page_component": "LandingPage",
+      "layout": "MarketingLayout",
+      "auth_requirement": "public",
+      "allowed_roles": [
+        "public"
+      ],
+      "agency_selector_requirement": false,
+      "role_selector_requirement": false,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "auth_entry",
+      "linked_entities": [],
+      "data_dependencies": [
+        "marketing_content"
+      ],
+      "status": "scaffolded_foundation",
+      "disconnected_risk": "low",
+      "notes": "Hero and feature sections scaffolded; content depth pending"
+    },
+    {
+      "route_path": "/auth/login",
+      "page_component": "LoginPage",
+      "layout": "AuthLayout",
+      "auth_requirement": "public",
+      "allowed_roles": [
+        "public"
+      ],
+      "agency_selector_requirement": false,
+      "role_selector_requirement": false,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "post_login_routing",
+      "linked_entities": [
+        "user",
+        "session"
+      ],
+      "data_dependencies": [
+        "auth_api"
+      ],
+      "status": "implemented_mock",
+      "disconnected_risk": "medium",
+      "notes": "Server action login with seeded credentials and cookie session"
+    },
+    {
+      "route_path": "/select-agency",
+      "page_component": "AgencySelectorPage",
+      "layout": "AppShell",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "super_admin",
+        "healthcare_admin",
+        "case_manager",
+        "caregiver",
+        "patient"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": false,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "role_selection",
+      "linked_entities": [
+        "agency",
+        "role_assignment"
+      ],
+      "data_dependencies": [
+        "agency_api"
+      ],
+      "status": "implemented_mock",
+      "disconnected_risk": "medium",
+      "notes": "Server action persists selected agency in session cookie"
+    },
+    {
+      "route_path": "/select-role",
+      "page_component": "RoleSelectorPage",
+      "layout": "AppShell",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "super_admin",
+        "healthcare_admin",
+        "case_manager",
+        "caregiver",
+        "patient"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "dashboard_redirect",
+      "linked_entities": [
+        "role_assignment"
+      ],
+      "data_dependencies": [
+        "rbac_api"
+      ],
+      "status": "implemented_mock",
+      "disconnected_risk": "medium",
+      "notes": "Server action persists active role and redirects by role map"
+    },
+    {
+      "route_path": "/dashboard/super-admin",
+      "page_component": "SuperAdminDashboardPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "super_admin"
+      ],
+      "agency_selector_requirement": false,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "wf_admin_revision_and_exports",
+      "linked_entities": [
+        "agency",
+        "warning",
+        "report_definition"
+      ],
+      "data_dependencies": [
+        "dashboard_api",
+        "report_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Middleware enforces active session and allowed role"
+    },
+    {
+      "route_path": "/dashboard/admin",
+      "page_component": "HealthcareAdminDashboardPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "wf_patient_admission",
+      "linked_entities": [
+        "patient",
+        "weekly_form",
+        "warning"
+      ],
+      "data_dependencies": [
+        "dashboard_api",
+        "patient_api"
+      ],
+      "status": "partially_implemented",
+      "disconnected_risk": "medium",
+      "notes": "Dashboard includes patient KPI cards and admission action links"
+    },
+    {
+      "route_path": "/dashboard/admin/patients",
+      "page_component": "AdminPatientsPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_patient_admission",
+      "child_flow": "patient_detail",
+      "linked_entities": [
+        "patient",
+        "patient_identifiers",
+        "patient_caregiver_assignment",
+        "patient_case_manager_assignment"
+      ],
+      "data_dependencies": [
+        "patient_api"
+      ],
+      "status": "implemented_mvp",
+      "disconnected_risk": "medium",
+      "notes": "Agency-scoped patient list backed by in-memory module store"
+    },
+    {
+      "route_path": "/dashboard/case-manager",
+      "page_component": "CaseManagerDashboardPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "case_manager"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "exception_review",
+      "linked_entities": [
+        "patient",
+        "exception",
+        "warning"
+      ],
+      "data_dependencies": [
+        "dashboard_api",
+        "warning_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Middleware enforces active session and allowed role"
+    },
+    {
+      "route_path": "/dashboard/caregiver",
+      "page_component": "CaregiverDashboardPage",
+      "layout": "MobileOptimizedLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "caregiver"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "wf_caregiver_daily_visit",
+      "linked_entities": [
+        "schedule_occurrence",
+        "weekly_form",
+        "warning"
+      ],
+      "data_dependencies": [
+        "dashboard_api",
+        "schedule_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Middleware enforces active session and allowed role"
+    },
+    {
+      "route_path": "/portal/patient",
+      "page_component": "PatientPortalDashboardPage",
+      "layout": "PatientPortalLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "patient"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "wf_weekly_submission_and_signatures",
+      "linked_entities": [
+        "patient",
+        "weekly_form",
+        "signature",
+        "notification"
+      ],
+      "data_dependencies": [
+        "patient_portal_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Middleware enforces active session and allowed role"
+    },
+    {
+      "route_path": "/dashboard/admin/patients/new",
+      "page_component": "PatientAdmissionPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_patient_admission",
+      "child_flow": "patient_activation",
+      "linked_entities": [
+        "patient",
+        "patient_identifiers",
+        "patient_authorization",
+        "care_plan"
+      ],
+      "data_dependencies": [
+        "patient_api",
+        "form_builder_api"
+      ],
+      "status": "implemented_mvp",
+      "disconnected_risk": "medium",
+      "notes": "Admission form validates core demographics and creates patient record"
+    },
+    {
+      "route_path": "/dashboard/admin/patients/:id",
+      "page_component": "PatientDetailPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_patient_admission",
+      "child_flow": "patient_activation",
+      "linked_entities": [
+        "patient",
+        "patient_identifiers",
+        "patient_caregiver_assignment",
+        "patient_case_manager_assignment",
+        "care_plan"
+      ],
+      "data_dependencies": [
+        "patient_api"
+      ],
+      "status": "implemented_mvp",
+      "disconnected_risk": "medium",
+      "notes": "Patient detail view enforces selected-agency boundary"
+    },
+    {
+      "route_path": "/dashboard/caregiver/visits/:occurrenceId",
+      "page_component": "CaregiverVisitPage",
+      "layout": "MobileOptimizedLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "caregiver"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_caregiver_daily_visit",
+      "child_flow": "daily_visit_submit_or_draft",
+      "linked_entities": [
+        "schedule_occurrence",
+        "daily_entry",
+        "time_entry",
+        "gps_event"
+      ],
+      "data_dependencies": [
+        "timesheet_api",
+        "evv_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Daily visit route scaffolded with role guard; workflow logic pending."
+    },
+    {
+      "route_path": "/dashboard/caregiver/week/:weekId",
+      "page_component": "CaregiverWeeklyPage",
+      "layout": "MobileOptimizedLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "caregiver"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_weekly_submission_and_signatures",
+      "child_flow": "weekly_submit",
+      "linked_entities": [
+        "weekly_form",
+        "daily_entry",
+        "signature",
+        "warning"
+      ],
+      "data_dependencies": [
+        "timesheet_api",
+        "signature_api",
+        "warning_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Weekly submission route scaffolded with role guard; validation/signature logic pending."
+    },
+    {
+      "route_path": "/portal/patient/signatures",
+      "page_component": "PatientSignaturePage",
+      "layout": "PatientPortalLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "patient"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_weekly_submission_and_signatures",
+      "child_flow": "signature_complete",
+      "linked_entities": [
+        "weekly_form",
+        "signature"
+      ],
+      "data_dependencies": [
+        "signature_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Patient signature route scaffolded for warning deep links; capture logic pending."
+    },
+    {
+      "route_path": "/dashboard/admin/exceptions",
+      "page_component": "AdminExceptionPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_admin_revision_and_exports",
+      "child_flow": "exception_resolution",
+      "linked_entities": [
+        "warning",
+        "exception",
+        "revision"
+      ],
+      "data_dependencies": [
+        "warning_api",
+        "revision_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Admin exception route scaffolded; queue and resolution logic pending."
+    },
+    {
+      "route_path": "/dashboard/case-manager/exceptions",
+      "page_component": "CaseManagerExceptionPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "case_manager"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_weekly_submission_and_signatures",
+      "child_flow": "exception_resolution",
+      "linked_entities": [
+        "warning",
+        "exception"
+      ],
+      "data_dependencies": [
+        "warning_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Case manager exception route scaffolded; assignment filters pending."
+    },
+    {
+      "route_path": "/dashboard/admin/submissions",
+      "page_component": "SubmissionReviewPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_admin_revision_and_exports",
+      "child_flow": "revision_creation",
+      "linked_entities": [
+        "weekly_form",
+        "revision",
+        "warning"
+      ],
+      "data_dependencies": [
+        "timesheet_api",
+        "revision_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Submission review route scaffolded; revision engine pending."
+    },
+    {
+      "route_path": "/dashboard/admin/form-builder",
+      "page_component": "FormBuilderPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_patient_admission",
+      "child_flow": "template_assignment",
+      "linked_entities": [
+        "form_template",
+        "form_template_version"
+      ],
+      "data_dependencies": [
+        "form_builder_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Form builder route scaffolded; template designer pending."
+    },
+    {
+      "route_path": "/dashboard/admin/file-center",
+      "page_component": "FileCenterPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_admin_revision_and_exports",
+      "child_flow": "import_export_jobs",
+      "linked_entities": [
+        "import_job",
+        "export_job",
+        "parser_job"
+      ],
+      "data_dependencies": [
+        "file_center_api",
+        "parser_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "File center route scaffolded; parser/job orchestration pending."
+    },
+    {
+      "route_path": "/dashboard/admin/reports",
+      "page_component": "AdminReportsPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_admin_revision_and_exports",
+      "child_flow": "report_drilldown",
+      "linked_entities": [
+        "report_definition",
+        "warning",
+        "payroll_line_item",
+        "billing_line_item"
+      ],
+      "data_dependencies": [
+        "report_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Reports route scaffolded; metric aggregation pending."
+    },
+    {
+      "route_path": "/why-choose-us",
+      "page_component": "WhyChooseUsPage",
+      "layout": "MarketingLayout",
+      "auth_requirement": "public",
+      "allowed_roles": [
+        "public"
+      ],
+      "agency_selector_requirement": false,
+      "role_selector_requirement": false,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "auth_entry",
+      "linked_entities": [],
+      "data_dependencies": [
+        "marketing_content"
+      ],
+      "status": "scaffolded_foundation",
+      "disconnected_risk": "low",
+      "notes": "Public value proposition route linked from landing page."
+    },
+    {
+      "route_path": "/what-we-solve",
+      "page_component": "WhatWeSolvePage",
+      "layout": "MarketingLayout",
+      "auth_requirement": "public",
+      "allowed_roles": [
+        "public"
+      ],
+      "agency_selector_requirement": false,
+      "role_selector_requirement": false,
+      "parent_flow": "wf_landing_to_portal",
+      "child_flow": "auth_entry",
+      "linked_entities": [],
+      "data_dependencies": [
+        "marketing_content"
+      ],
+      "status": "scaffolded_foundation",
+      "disconnected_risk": "low",
+      "notes": "Public problem statement route linked from landing page."
+    },
+    {
+      "route_path": "/dashboard/admin/assignments",
+      "page_component": "AdminAssignmentsPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_patient_admission",
+      "child_flow": "assignment_directory",
+      "linked_entities": [
+        "patient_caregiver_assignment",
+        "patient_case_manager_assignment"
+      ],
+      "data_dependencies": [
+        "assignment_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Assignment directory scaffold route linked from healthcare admin dashboard."
+    },
+    {
+      "route_path": "/dashboard/admin/authorizations",
+      "page_component": "AdminAuthorizationsPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_patient_admission",
+      "child_flow": "authorization_management",
+      "linked_entities": [
+        "patient_authorization",
+        "authorization_rule_version"
+      ],
+      "data_dependencies": [
+        "authorization_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Authorization policy scaffold route with forward-only effective-date policy context."
+    },
+    {
+      "route_path": "/dashboard/admin/scheduling",
+      "page_component": "AdminSchedulingPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_patient_admission",
+      "child_flow": "schedule_management",
+      "linked_entities": [
+        "schedule",
+        "schedule_occurrence"
+      ],
+      "data_dependencies": [
+        "schedule_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Scheduling scaffold route linked from healthcare admin dashboard."
+    },
+    {
+      "route_path": "/dashboard/admin/billing",
+      "page_component": "AdminBillingPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_admin_revision_and_exports",
+      "child_flow": "billing_generation",
+      "linked_entities": [
+        "billing_rule",
+        "billing_line_item"
+      ],
+      "data_dependencies": [
+        "billing_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Billing outputs scaffold route linked from healthcare admin dashboard."
+    },
+    {
+      "route_path": "/dashboard/admin/payroll",
+      "page_component": "AdminPayrollPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_admin_revision_and_exports",
+      "child_flow": "payroll_generation",
+      "linked_entities": [
+        "payroll_rule",
+        "payroll_line_item"
+      ],
+      "data_dependencies": [
+        "payroll_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Payroll outputs scaffold route linked from healthcare admin dashboard."
+    },
+    {
+      "route_path": "/dashboard/admin/exports",
+      "page_component": "AdminExportsPage",
+      "layout": "DashboardLayout",
+      "auth_requirement": "required",
+      "allowed_roles": [
+        "healthcare_admin",
+        "super_admin"
+      ],
+      "agency_selector_requirement": true,
+      "role_selector_requirement": true,
+      "parent_flow": "wf_admin_revision_and_exports",
+      "child_flow": "export_jobs",
+      "linked_entities": [
+        "export_job"
+      ],
+      "data_dependencies": [
+        "file_center_api"
+      ],
+      "status": "guarded_scaffold",
+      "disconnected_risk": "medium",
+      "notes": "Exports scaffold route for payroll/billing/report job packaging."
+    }
   ]
 }
