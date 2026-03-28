@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "project": "timesheet_healthcare",
+    "version": "0.2.0-pw001-scaffold",
+    "generated_at": "2026-03-28T00:00:00Z",
+    "last_updated": "2026-03-28T01:00:00Z",
+    "status": "scaffolded-foundation"
+  },
+  "summary": {
+    "current_codebase_state": "scaffolded_foundation",
+    "observed_files": [
+      "README.md",
+      "project_memory/*",
+      "apps/web/*"
+    ],
+    "architectural_completeness": "low_to_medium",
+    "overall_risk": "high"
+  },
+  "nodes": [
+    {
+      "id": "repo_root",
+      "type": "system",
+      "name": "timesheet_healthcare",
+      "status": "exists",
+      "implementation_completeness": 22,
+      "risk_level": "high",
+      "role_owner": [
+        "super_admin"
+      ],
+      "connected_routes": [
+        "/",
+        "/auth/login",
+        "/select-agency",
+        "/select-role",
+        "/dashboard/super-admin",
+        "/dashboard/admin",
+        "/dashboard/case-manager",
+        "/dashboard/caregiver",
+        "/portal/patient"
+      ],
+      "connected_modules": [
+        "landing_page",
+        "auth",
+        "tenancy",
+        "dashboards",
+        "patient_management",
+        "scheduling",
+        "weekly_forms",
+        "warnings_exceptions",
+        "payroll",
+        "billing",
+        "reports"
+      ],
+      "last_updated": "2026-03-28T01:00:00Z"
+    },
+    {
+      "id": "readme",
+      "type": "document",
+      "name": "README.md",
+      "status": "exists",
+      "implementation_completeness": 10,
+      "risk_level": "medium",
+      "role_owner": [
+        "super_admin"
+      ],
+      "connected_routes": [],
+      "connected_modules": [],
+      "last_updated": "2026-03-28T00:00:00Z"
+    },
+    {
+      "id": "web_app",
+      "type": "application",
+      "name": "nextjs_multitenant_app",
+      "status": "scaffolded_foundation",
+      "implementation_completeness": 30,
+      "risk_level": "high",
+      "role_owner": [
+        "super_admin",
+        "healthcare_admin",
+        "case_manager",
+        "caregiver",
+        "patient"
+      ],
+      "connected_routes": [
+        "/",
+        "/auth/login",
+        "/select-agency",
+        "/select-role",
+        "/dashboard/super-admin",
+        "/dashboard/admin",
+        "/dashboard/case-manager",
+        "/dashboard/caregiver",
+        "/portal/patient"
+      ],
+      "connected_modules": [
+        "landing_page",
+        "auth",
+        "tenancy",
+        "role_management",
+        "dashboards",
+        "patient_admission",
+        "scheduling",
+        "weekly_forms",
+        "signatures",
+        "gps_evv",
+        "warnings_exceptions",
+        "revision_history",
+        "form_builder",
+        "printable_pdf_export",
+        "reports",
+        "import_export",
+        "parser",
+        "payroll",
+        "billing",
+        "notifications",
+        "fraud_anomaly_hooks"
+      ],
+      "last_updated": "2026-03-28T01:00:00Z"
+    }
+  ],
+  "edges": [
+    {
+      "from": "repo_root",
+      "to": "readme",
+      "relationship": "contains",
+      "status": "active"
+    },
+    {
+      "from": "repo_root",
+      "to": "web_app",
+      "relationship": "target-architecture",
+      "status": "active"
+    }
+  ],
+  "gaps": [
+    "Tenant-aware auth and role guards are not implemented yet.",
+    "Routes and dashboards are scaffolded but not connected to APIs.",
+    "No implemented role-based business workflows exist yet.",
+    "No persistence layer exists.",
+    "Dependencies are declared but not installed in this session."
+  ],
+  "continuity_risks": [
+    "Building features without base architecture will create disconnected modules.",
+    "Role workflows may diverge without shared contracts.",
+    "Data model drift risk is high until contracts are codified and enforced."
+  ]
+}

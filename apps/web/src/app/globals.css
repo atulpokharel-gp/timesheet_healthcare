@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-ink: #15253f;
+  --color-mist: #eef6ff;
+  --color-teal: #2f7a77;
+  --color-amber: #d38a1b;
+}
+
+body {
+  color: var(--color-ink);
+  background:
+    radial-gradient(circle at 12% 20%, rgba(47, 122, 119, 0.15), transparent 42%),
+    radial-gradient(circle at 85% 15%, rgba(211, 138, 27, 0.15), transparent 36%),
+    linear-gradient(180deg, #f8fbff 0%, #f3f8ff 55%, #ecf3ff 100%);
+  min-height: 100vh;
+}

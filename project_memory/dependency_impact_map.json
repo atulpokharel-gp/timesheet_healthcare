@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "version": "0.2.0-pw001-scaffold",
+    "last_updated": "2026-03-28T01:00:00Z",
+    "usage_rule": "Update this map before and after every meaningful change to evaluate ripple effects."
+  },
+  "domains": [
+    "dashboards",
+    "routes",
+    "workflows",
+    "entities",
+    "validations",
+    "warnings",
+    "reports",
+    "exports",
+    "imports",
+    "signatures",
+    "scheduling",
+    "billing",
+    "payroll",
+    "permissions",
+    "ui_components",
+    "apis",
+    "audit_trail"
+  ],
+  "impact_rules": [
+    {
+      "trigger": "auth_or_role_change",
+      "must_evaluate": ["routes", "permissions", "dashboards", "workflows", "apis", "audit_trail"],
+      "risk": "high"
+    },
+    {
+      "trigger": "patient_or_assignment_change",
+      "must_evaluate": ["scheduling", "daily_entries", "weekly_forms", "warnings", "reports", "billing", "payroll"],
+      "risk": "high"
+    },
+    {
+      "trigger": "authorization_rule_change",
+      "must_evaluate": ["validations", "warnings", "weekly_forms", "billing", "reports", "audit_trail"],
+      "risk": "critical"
+    },
+    {
+      "trigger": "schedule_change",
+      "must_evaluate": ["caregiver_dashboard", "daily_workflow", "gps_evv", "warnings", "payroll", "billing"],
+      "risk": "high"
+    },
+    {
+      "trigger": "signature_logic_change",
+      "must_evaluate": ["weekly_submission", "patient_portal", "warnings", "exports", "audit_trail"],
+      "risk": "critical"
+    },
+    {
+      "trigger": "warning_engine_change",
+      "must_evaluate": ["dashboards", "route_deep_links", "exceptions", "notifications", "reports"],
+      "risk": "high"
+    },
+    {
+      "trigger": "revision_or_edit_policy_change",
+      "must_evaluate": ["weekly_forms", "revision_history", "reports", "exports", "audit_trail"],
+      "risk": "critical"
+    },
+    {
+      "trigger": "billing_or_payroll_rule_change",
+      "must_evaluate": ["line_items", "exports", "reports", "approvals", "audit_trail"],
+      "risk": "critical"
+    },
+    {
+      "trigger": "import_export_parser_change",
+      "must_evaluate": ["data_contracts", "validation", "jobs", "reports", "audit_trail"],
+      "risk": "high"
+    }
+  ],
+  "current_dependency_assessment": {
+    "baseline_phase": "foundation_scaffolded",
+    "overall_system_risk": "high",
+    "known_broken_continuity_points": [
+      "Route-level middleware exists but tenant isolation logic is not implemented",
+      "No implemented shared contracts in code",
+      "No implemented warning deep links",
+      "No implemented revision/audit architecture",
+      "No implemented billing/payroll/reporting pipeline"
+    ],
+    "immediate_mitigation_priorities": [
+      "Implement auth + tenancy + role gates before feature pages",
+      "Define typed shared contracts and validation layer",
+      "Implement warning and revision infrastructure before financial exports"
+    ]
+  },
+  "change_impact_entries": [
+    {
+      "id": "DIM-0001",
+      "timestamp": "2026-03-28T00:00:00Z",
+      "change_title": "Initialize mandatory project memory baseline",
+      "changed_artifacts": ["project_memory/*.json"],
+      "impacted_domains": ["dashboards", "routes", "workflows", "entities", "permissions", "audit_trail"],
+      "impact_summary": "Introduced architecture-aware planning baseline; no runtime code impact yet.",
+      "required_follow_up": ["implement PW-001 and PW-002 before module-specific delivery"],
+      "status": "recorded"
+    },
+    {
+      "id": "DIM-0002",
+      "timestamp": "2026-03-28T01:00:00Z",
+      "change_title": "PW-001 scaffold Next.js + TypeScript + Tailwind foundation",
+      "changed_artifacts": ["apps/web/*", "project_memory/*.json"],
+      "impacted_domains": ["routes", "dashboards", "ui_components", "permissions", "workflows"],
+      "impact_summary": "Created route-group scaffold and module boundaries with placeholder dashboard pages and middleware hook points.",
+      "required_follow_up": ["execute PW-002 auth/tenant/role wiring", "install dependencies and run build checks"],
+      "status": "recorded"
+    }
+  ]
+}

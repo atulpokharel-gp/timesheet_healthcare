@@ -1,0 +1,141 @@
+{
+  "metadata": {
+    "version": "0.2.0-pw001-scaffold",
+    "last_updated": "2026-03-28T01:00:00Z"
+  },
+  "entries": [
+    {
+      "timestamp": "2026-03-28T01:00:00Z",
+      "task_title": "PW-001 scaffold Next.js + TypeScript + Tailwind foundation",
+      "what_changed": [
+        "Scaffolded Next.js App Router project in apps/web with TypeScript and Tailwind configuration.",
+        "Created route groups for public/auth/app and added scaffold pages for login, selectors, and role dashboards.",
+        "Added module boundary registry and module placeholder folders.",
+        "Added middleware placeholder for future auth/tenant/role enforcement."
+      ],
+      "why_it_changed": "Execute Phase PW-001 to establish connected architectural foundation before implementing business workflows.",
+      "affected_files": [
+        "apps/web/package.json",
+        ".gitignore",
+        "README.md",
+        "apps/web/README.md",
+        "apps/web/tsconfig.json",
+        "apps/web/tailwind.config.ts",
+        "apps/web/src/app/layout.tsx",
+        "apps/web/src/app/(public)/page.tsx",
+        "apps/web/src/app/(auth)/auth/login/page.tsx",
+        "apps/web/src/app/(app)/layout.tsx",
+        "apps/web/src/app/(app)/select-agency/page.tsx",
+        "apps/web/src/app/(app)/select-role/page.tsx",
+        "apps/web/src/app/(app)/dashboard/*",
+        "apps/web/src/app/(app)/portal/patient/page.tsx",
+        "apps/web/src/modules/*",
+        "apps/web/src/modules/module-boundaries.ts",
+        "apps/web/middleware.ts",
+        "project_memory/app_graph.json",
+        "project_memory/workflow_map.json",
+        "project_memory/module_registry.json",
+        "project_memory/dashboard_registry.json",
+        "project_memory/route_map.json",
+        "project_memory/pending_work.json",
+        "project_memory/dependency_impact_map.json",
+        "project_memory/change_log.json"
+      ],
+      "affected_modules": [
+        "landing_page",
+        "auth",
+        "tenancy",
+        "role_management",
+        "dashboards",
+        "patient_portal"
+      ],
+      "affected_dashboards": [
+        "super_admin",
+        "healthcare_admin",
+        "case_manager",
+        "caregiver",
+        "patient"
+      ],
+      "impacted_workflows": [
+        "wf_landing_to_portal"
+      ],
+      "impacted_entities": [
+        "session",
+        "agency",
+        "role_assignment"
+      ],
+      "memory_files_updated": [
+        "app_graph.json",
+        "workflow_map.json",
+        "module_registry.json",
+        "dashboard_registry.json",
+        "route_map.json",
+        "pending_work.json",
+        "dependency_impact_map.json",
+        "change_log.json"
+      ],
+      "follow_up_tasks": [
+        "Run dependency installation and local checks once terminal execution is available.",
+        "Start PW-002 auth + tenant + role routing integration."
+      ]
+    },
+    {
+      "timestamp": "2026-03-28T00:00:00Z",
+      "task_title": "Initialize architecture memory system and perform baseline audit",
+      "what_changed": [
+        "Created mandatory project_memory directory.",
+        "Created 10 mandatory JSON memory files.",
+        "Documented system graph, workflows, modules, dashboards, routes, contracts, decisions, dependencies, and pending phases."
+      ],
+      "why_it_changed": "Repository contained minimal code, requiring architecture baseline and dependency-aware memory before implementation.",
+      "affected_files": [
+        "project_memory/app_graph.json",
+        "project_memory/workflow_map.json",
+        "project_memory/module_registry.json",
+        "project_memory/dashboard_registry.json",
+        "project_memory/shared_data_contracts.json",
+        "project_memory/pending_work.json",
+        "project_memory/change_log.json",
+        "project_memory/feature_decisions.json",
+        "project_memory/route_map.json",
+        "project_memory/dependency_impact_map.json"
+      ],
+      "affected_modules": [
+        "all"
+      ],
+      "affected_dashboards": [
+        "super_admin",
+        "healthcare_admin",
+        "case_manager",
+        "caregiver",
+        "patient"
+      ],
+      "impacted_workflows": [
+        "wf_landing_to_portal",
+        "wf_patient_admission",
+        "wf_caregiver_daily_visit",
+        "wf_weekly_submission_and_signatures",
+        "wf_admin_revision_and_exports"
+      ],
+      "impacted_entities": [
+        "all baseline shared contracts"
+      ],
+      "memory_files_updated": [
+        "app_graph.json",
+        "workflow_map.json",
+        "module_registry.json",
+        "dashboard_registry.json",
+        "shared_data_contracts.json",
+        "pending_work.json",
+        "change_log.json",
+        "feature_decisions.json",
+        "route_map.json",
+        "dependency_impact_map.json"
+      ],
+      "follow_up_tasks": [
+        "Scaffold core application stack (PW-001).",
+        "Implement auth/tenant/role routing (PW-002)."
+      ]
+    }
+  ]
+}
