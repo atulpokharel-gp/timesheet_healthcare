@@ -37,10 +37,16 @@ export const moduleBoundaries: ModuleBoundary[] = [
     dependsOn: ["auth", "tenancy", "role_management"]
   },
   {
+    id: "patient_admission",
+    ownerRoles: ["healthcare_admin"],
+    routePrefixes: ["/dashboard/admin/patients/new"],
+    dependsOn: ["dashboards", "patient_management"]
+  },
+  {
     id: "patient_management",
     ownerRoles: ["healthcare_admin", "case_manager"],
     routePrefixes: ["/dashboard/admin/patients"],
-    dependsOn: ["dashboards"]
+    dependsOn: ["dashboards", "patient_admission"]
   },
   {
     id: "scheduling",

@@ -9,4 +9,7 @@ export type SessionContext = {
   userId: string;
   email: string;
   scopes: AgencyScope[];
+  selectedAgencyId?: string;
+  activeRole?: UserRole;
+  issuedAt?: string;
 };

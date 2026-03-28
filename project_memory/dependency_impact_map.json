@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "version": "0.2.0-pw001-scaffold",
-    "last_updated": "2026-03-28T01:00:00Z",
+    "version": "0.4.0-pw003-admission-m1",
+    "last_updated": "2026-03-28T03:00:00Z",
     "usage_rule": "Update this map before and after every meaningful change to evaluate ripple effects."
   },
   "domains": [
@@ -71,22 +71,42 @@
     }
   ],
   "current_dependency_assessment": {
-    "baseline_phase": "foundation_scaffolded",
+    "baseline_phase": "pw003_admission_m1_implemented",
     "overall_system_risk": "high",
     "known_broken_continuity_points": [
-      "Route-level middleware exists but tenant isolation logic is not implemented",
-      "No implemented shared contracts in code",
+      "Route-level guards rely on unsigned mock session cookie",
+      "Patient admission and management use in-memory storage and are not persistent",
       "No implemented warning deep links",
       "No implemented revision/audit architecture",
       "No implemented billing/payroll/reporting pipeline"
     ],
     "immediate_mitigation_priorities": [
-      "Implement auth + tenancy + role gates before feature pages",
+      "Replace mock auth with provider-backed identity and signed sessions",
       "Define typed shared contracts and validation layer",
       "Implement warning and revision infrastructure before financial exports"
     ]
   },
   "change_impact_entries": [
+    {
+      "id": "DIM-0005",
+      "timestamp": "2026-03-28T03:00:00Z",
+      "change_title": "PW-003 milestone 1 implement patient admission/list/detail MVP",
+      "changed_artifacts": ["apps/web/src/modules/patients/*", "apps/web/src/app/(app)/dashboard/admin/page.tsx", "apps/web/src/app/(app)/dashboard/admin/patients/*", "apps/web/src/modules/module-boundaries.ts"],
+      "impacted_domains": ["dashboards", "routes", "workflows", "entities", "validations", "permissions", "ui_components"],
+      "impact_summary": "Healthcare admin can now complete an admission workflow slice end-to-end, but persistence and authorization/scheduling integration are pending.",
+      "required_follow_up": ["replace in-memory patient repository", "connect assignment directories", "bridge admission schedule inputs to scheduling engine", "add integration tests for admission flow"],
+      "status": "recorded"
+    },
+    {
+      "id": "DIM-0004",
+      "timestamp": "2026-03-28T02:20:00Z",
+      "change_title": "PW-002 stabilize selector transition logic and redirect continuity",
+      "changed_artifacts": ["apps/web/src/lib/auth/session.ts", "apps/web/src/app/(app)/select-agency/page.tsx", "apps/web/src/app/(app)/select-role/page.tsx"],
+      "impacted_domains": ["routes", "permissions", "workflows", "dashboards", "entities"],
+      "impact_summary": "Eliminated implicit role routing and added deterministic auto-selection only for single-option cases, reducing loop risk in auth transition paths.",
+      "required_follow_up": ["run integration redirect matrix tests", "verify behavior for users with no valid role assignments"],
+      "status": "recorded"
+    },
     {
       "id": "DIM-0001",
       "timestamp": "2026-03-28T00:00:00Z",
@@ -105,6 +125,16 @@
       "impacted_domains": ["routes", "dashboards", "ui_components", "permissions", "workflows"],
       "impact_summary": "Created route-group scaffold and module boundaries with placeholder dashboard pages and middleware hook points.",
       "required_follow_up": ["execute PW-002 auth/tenant/role wiring", "install dependencies and run build checks"],
+      "status": "recorded"
+    },
+    {
+      "id": "DIM-0003",
+      "timestamp": "2026-03-28T02:00:00Z",
+      "change_title": "PW-002 implement login/session, selectors, middleware guards, and role redirects",
+      "changed_artifacts": ["apps/web/src/app/(auth)/auth/login/page.tsx", "apps/web/src/app/(app)/select-agency/page.tsx", "apps/web/src/app/(app)/select-role/page.tsx", "apps/web/middleware.ts", "apps/web/src/lib/auth/*", "apps/web/src/modules/auth/mock-users.ts"],
+      "impacted_domains": ["routes", "permissions", "workflows", "dashboards", "entities", "audit_trail"],
+      "impact_summary": "Auth entry flow now resolves agency and role context and enforces role-route matching for dashboard and portal routes.",
+      "required_follow_up": ["replace mock auth with production identity provider", "add session signing and rotation", "add integration tests for redirect matrix"],
       "status": "recorded"
     }
   ]

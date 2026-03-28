@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "version": "0.2.0-pw001-scaffold",
-    "last_updated": "2026-03-28T01:00:00Z"
+    "version": "0.4.0-pw003-admission-m1",
+    "last_updated": "2026-03-28T03:00:00Z"
   },
   "dashboards": [
     {
@@ -19,7 +19,7 @@
       "empty_states": ["no_agencies", "no_alerts"],
       "warning_surfaces": ["platform_exceptions", "security_events"],
       "workflow_entry_points": ["wf_admin_revision_and_exports"],
-      "dependency_risks": ["tenant visibility boundaries not implemented"],
+      "dependency_risks": ["tenant visibility boundaries still rely on mock session source"],
       "status": "scaffolded_foundation"
     },
     {
@@ -33,12 +33,12 @@
       "filters": ["patient", "caregiver", "payer", "week", "exception_status"],
       "linked_modules": ["dashboards", "patient_admission", "patient_management", "scheduling", "weekly_forms", "warnings_exceptions", "revision_history", "form_builder", "payroll", "billing", "reports", "import_export"],
       "linked_entities": ["patient", "weekly_form", "warning", "exception", "revision", "payroll_line_item", "billing_line_item"],
-      "missing_states": ["data_integration_pending", "table_data_pending"],
-      "empty_states": ["no_submissions", "no_exceptions"],
+      "missing_states": ["assignment_directory_pending", "authorization_policy_checks_pending"],
+      "empty_states": ["no_submissions", "no_exceptions", "no_patients"],
       "warning_surfaces": ["missing_signatures", "gps_mismatch", "over_authorized_hours", "admin_edit_after_submission"],
       "workflow_entry_points": ["wf_patient_admission", "wf_admin_revision_and_exports"],
-      "dependency_risks": ["high cross-module coupling without shared contracts"],
-      "status": "scaffolded_foundation"
+      "dependency_risks": ["high cross-module coupling without shared contracts", "auth still mock-backed", "patient registry currently in-memory"],
+      "status": "partially_implemented"
     },
     {
       "id": "case_manager",
@@ -55,7 +55,7 @@
       "empty_states": ["no_assigned_patients", "no_exceptions"],
       "warning_surfaces": ["exception_queue"],
       "workflow_entry_points": ["wf_weekly_submission_and_signatures"],
-      "dependency_risks": ["exception deep links not implemented"],
+      "dependency_risks": ["exception deep links not implemented", "auth still mock-backed"],
       "status": "scaffolded_foundation"
     },
     {
@@ -73,7 +73,7 @@
       "empty_states": ["no_visits_today", "no_assigned_patients"],
       "warning_surfaces": ["weekly_validation_banner", "daily_form_inline_warnings"],
       "workflow_entry_points": ["wf_caregiver_daily_visit", "wf_weekly_submission_and_signatures"],
-      "dependency_risks": ["mobile UX and offline sync design not implemented"],
+      "dependency_risks": ["mobile UX and offline sync design not implemented", "auth still mock-backed"],
       "status": "scaffolded_foundation"
     },
     {
@@ -91,7 +91,7 @@
       "empty_states": ["no_signature_required", "no_notifications"],
       "warning_surfaces": ["pending_signature_banner"],
       "workflow_entry_points": ["wf_weekly_submission_and_signatures"],
-      "dependency_risks": ["portal access boundaries not implemented"],
+      "dependency_risks": ["portal access boundaries rely on mock session source"],
       "status": "scaffolded_foundation"
     }
   ]

@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "version": "0.2.0-pw001-scaffold",
-    "last_updated": "2026-03-28T01:00:00Z",
-    "status": "foundation-scaffolded"
+    "version": "0.4.0-pw003-admission-m1",
+    "last_updated": "2026-03-28T03:00:00Z",
+    "status": "pw003-admission-m1-implemented"
   },
   "workflows": [
     {
@@ -25,9 +25,9 @@
       "linked_entities": ["user", "session", "agency", "role_assignment"],
       "linked_routes": ["/", "/auth/login", "/select-agency", "/select-role"],
       "exit_points": ["/dashboard/*", "/portal/patient"],
-      "incomplete_areas": ["authentication integration", "tenant selector logic", "role redirect logic"],
+      "incomplete_areas": ["external identity provider", "session signing/rotation", "mfa readiness"],
       "optimization_opportunities": ["single redirect orchestrator", "role-aware landing shortcuts"],
-      "status": "scaffolded_foundation"
+      "status": "implemented_mock"
     },
     {
       "id": "wf_patient_admission",
@@ -47,11 +47,11 @@
       "warnings": ["authorization_gap", "missing_assignment", "inactive_schedule"],
       "dependencies": ["patient_admission", "patient_management", "authorization_rules", "scheduling"],
       "linked_entities": ["patient", "patient_identifiers", "patient_authorization", "care_plan"],
-      "linked_routes": ["/dashboard/admin/patients", "/dashboard/admin/patients/new"],
-      "exit_points": ["/dashboard/admin/patients/:id"],
-      "incomplete_areas": ["all"],
-      "optimization_opportunities": ["wizard with validation checkpoints"],
-      "status": "not_implemented"
+      "linked_routes": ["/dashboard/admin", "/dashboard/admin/patients", "/dashboard/admin/patients/new", "/dashboard/admin/patients/:id"],
+      "exit_points": ["/dashboard/admin/patients/:id", "/dashboard/admin/patients"],
+      "incomplete_areas": ["authorization effective-date policy integration", "staff directory-backed assignment", "schedule generation and recurrence engine", "persistent database layer"],
+      "optimization_opportunities": ["wizard with validation checkpoints", "admission preflight for assignment and authorization conflicts"],
+      "status": "implemented_mvp"
     },
     {
       "id": "wf_caregiver_daily_visit",

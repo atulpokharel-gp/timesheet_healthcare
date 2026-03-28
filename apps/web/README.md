@@ -1,4 +1,4 @@
-# Web App (PW-001 Scaffold)
+# Web App (PW-001 + PW-002 + PW-003 M1)
 
 This directory contains the Next.js + TypeScript + Tailwind application scaffold for the healthcare SaaS platform.
 
@@ -16,9 +16,32 @@ This directory contains the Next.js + TypeScript + Tailwind application scaffold
 - Module boundary registry and module placeholders
 - Middleware placeholder for future route protection
 
-## Next (PW-002)
+## Implemented in PW-002
 
-- Connect login to session handling
-- Implement agency selector logic
-- Implement role selector and role-aware redirects
-- Enforce tenant-safe route guards
+Implemented:
+
+- Login server action with mock credentials
+- Cookie-based session context
+- Agency selector and role selector flows
+- Middleware guard enforcement and role-based redirects
+
+Next:
+
+- Replace mock auth with production identity provider
+- Add secure signed session strategy
+- Add guard + redirect integration tests
+
+## Implemented in PW-003 Milestone 1
+
+- Healthcare admin dashboard upgraded with patient metrics and admission entry actions
+- Patient routes added:
+  - `/dashboard/admin/patients`
+  - `/dashboard/admin/patients/new`
+  - `/dashboard/admin/patients/:id`
+- Patient module implemented with typed in-memory repository and admission validation
+
+## Next (PW-003)
+
+- Replace in-memory patient repository with persistent data layer
+- Integrate assignment directories and schedule generation workflow
+- Add integration tests for patient admission/list/detail flow

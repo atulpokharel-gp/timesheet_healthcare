@@ -1,9 +1,36 @@
 {
   "metadata": {
-    "version": "0.2.0-pw001-scaffold",
-    "last_updated": "2026-03-28T01:00:00Z"
+    "version": "0.4.0-pw003-admission-m1",
+    "last_updated": "2026-03-28T03:00:00Z"
   },
   "decisions": [
+    {
+      "id": "FD-011",
+      "title": "PW-003 admission vertical slice with in-memory repository",
+      "decision": "Deliver patient admission/list/detail as a connected MVP using an in-memory patient repository before introducing persistent storage.",
+      "rationale": "Unblocks operational workflow validation and route integration while minimizing early-phase infrastructure coupling.",
+      "impacted_modules": ["patient_admission", "patient_management", "dashboards", "scheduling"],
+      "constraints": ["data is non-persistent", "multi-instance consistency is not guaranteed", "must be replaced before production"],
+      "future_implications": ["repository interface can be swapped for database adapter", "admission integration tests can remain stable during data-layer migration"]
+    },
+    {
+      "id": "FD-010",
+      "title": "Deterministic selector progression before dashboard routing",
+      "decision": "Only redirect to dashboard/portal routes when both selectedAgencyId and activeRole are explicitly set; otherwise force selector steps in order.",
+      "rationale": "Prevents redirect loops and ambiguous routing when session scope allows multiple agencies or roles.",
+      "impacted_modules": ["auth", "tenancy", "role_management", "dashboards"],
+      "constraints": ["auto-selection allowed only when single deterministic option", "zero-role selection must fail safe to agency selector"],
+      "future_implications": ["simpler middleware reasoning", "clearer test matrix for selector transitions"]
+    },
+    {
+      "id": "FD-009",
+      "title": "PW-002 mock identity and cookie session model",
+      "decision": "Use seeded mock user credentials and cookie-based session context for agency and role continuity while production auth is pending.",
+      "rationale": "Allows end-to-end route guard and redirect behavior to be implemented now without blocking on identity provider selection.",
+      "impacted_modules": ["auth", "tenancy", "role_management", "dashboards"],
+      "constraints": ["not production-secure", "must be replaced with signed secure session and external identity"],
+      "future_implications": ["identity provider integration in next phase", "add secure token/session rotation"]
+    },
     {
       "id": "FD-008",
       "title": "Frontend scaffold in apps/web with route groups",
