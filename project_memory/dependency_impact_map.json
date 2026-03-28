@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "version": "0.5.0-pw003-route-surface-m2",
-    "last_updated": "2026-03-28T09:58:00Z",
+    "version": "0.5.1-pw003-route-surface-m2a",
+    "last_updated": "2026-03-28T10:06:00Z",
     "usage_rule": "Update this map before and after every meaningful change to evaluate ripple effects."
   },
   "domains": [
@@ -146,6 +146,25 @@
     ]
   },
   "change_impact_entries": [
+    {
+      "id": "DIM-0007",
+      "timestamp": "2026-03-28T10:06:00Z",
+      "change_title": "Correct caregiver dashboard deep links to parameterized route surfaces",
+      "changed_artifacts": [
+        "apps/web/src/app/(app)/dashboard/caregiver/page.tsx"
+      ],
+      "impacted_domains": [
+        "routes",
+        "dashboards",
+        "workflows",
+        "ui_components"
+      ],
+      "impact_summary": "Caregiver dashboard now links to existing dynamic routes instead of non-existent static paths.",
+      "required_follow_up": [
+        "bind real occurrence/week identifiers from scheduling data once workflow engine is implemented"
+      ],
+      "status": "recorded"
+    },
     {
       "id": "DIM-0006",
       "timestamp": "2026-03-28T09:58:00Z",

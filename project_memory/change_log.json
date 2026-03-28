@@ -1,9 +1,62 @@
 {
   "metadata": {
-    "version": "0.5.0-pw003-route-surface-m2",
-    "last_updated": "2026-03-28T09:58:00Z"
+    "version": "0.5.1-pw003-route-surface-m2a",
+    "last_updated": "2026-03-28T10:06:00Z"
   },
   "entries": [
+    {
+      "timestamp": "2026-03-28T10:06:00Z",
+      "task_title": "Align caregiver dashboard links with parameterized visit/week routes",
+      "what_changed": [
+        "Updated caregiver dashboard links to use parameterized route examples for daily visit and weekly submission pages.",
+        "Refreshed project memory metadata timestamps after this meaningful adjustment."
+      ],
+      "why_it_changed": "Ensure dashboard entry points match the modeled dynamic route patterns and avoid broken/non-existent links.",
+      "affected_files": [
+        "apps/web/src/app/(app)/dashboard/caregiver/page.tsx",
+        "project_memory/app_graph.json",
+        "project_memory/workflow_map.json",
+        "project_memory/module_registry.json",
+        "project_memory/dashboard_registry.json",
+        "project_memory/shared_data_contracts.json",
+        "project_memory/pending_work.json",
+        "project_memory/change_log.json",
+        "project_memory/feature_decisions.json",
+        "project_memory/route_map.json",
+        "project_memory/dependency_impact_map.json"
+      ],
+      "affected_modules": [
+        "dashboards",
+        "daily_entries",
+        "weekly_forms"
+      ],
+      "affected_dashboards": [
+        "caregiver"
+      ],
+      "impacted_workflows": [
+        "wf_caregiver_daily_visit",
+        "wf_weekly_submission_and_signatures"
+      ],
+      "impacted_entities": [
+        "schedule_occurrence",
+        "weekly_form"
+      ],
+      "memory_files_updated": [
+        "app_graph.json",
+        "workflow_map.json",
+        "module_registry.json",
+        "dashboard_registry.json",
+        "shared_data_contracts.json",
+        "pending_work.json",
+        "change_log.json",
+        "feature_decisions.json",
+        "route_map.json",
+        "dependency_impact_map.json"
+      ],
+      "follow_up_tasks": [
+        "replace placeholder route parameters with real IDs from scheduling/weekly form data queries"
+      ]
+    },
     {
       "timestamp": "2026-03-28T09:58:00Z",
       "task_title": "PW-003 milestone 2: scaffold connected required workflow routes and dashboards",

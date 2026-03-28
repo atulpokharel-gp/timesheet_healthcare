@@ -7,10 +7,16 @@ export default function CaregiverDashboardPage() {
         <h1 className="text-3xl font-bold text-brand-ink">Caregiver Dashboard</h1>
         <p className="mt-2 text-slate-700">Daily visit execution, weekly review, signatures, and warning-aware submission continuity.</p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/dashboard/caregiver/daily" className="rounded-lg bg-brand-ink px-4 py-2 text-sm font-semibold text-white">
+          <Link
+            href="/dashboard/caregiver/visits/today-occurrence"
+            className="rounded-lg bg-brand-ink px-4 py-2 text-sm font-semibold text-white"
+          >
             Open Daily Visit
           </Link>
-          <Link href="/dashboard/caregiver/week" className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800">
+          <Link
+            href="/dashboard/caregiver/week/current-week"
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800"
+          >
             Open Weekly Submission
           </Link>
         </div>
