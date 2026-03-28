@@ -8,13 +8,13 @@ export default function CaregiverDashboardPage() {
         <p className="mt-2 text-slate-700">Daily visit execution, weekly review, signatures, and warning-aware submission continuity.</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            href="/dashboard/caregiver/visits/today-occurrence"
+            href="/dashboard/caregiver/visits/example-occurrence-id"
             className="rounded-lg bg-brand-ink px-4 py-2 text-sm font-semibold text-white"
           >
             Open Daily Visit
           </Link>
           <Link
-            href="/dashboard/caregiver/week/current-week"
+            href="/dashboard/caregiver/week/example-week-id"
             className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800"
           >
             Open Weekly Submission

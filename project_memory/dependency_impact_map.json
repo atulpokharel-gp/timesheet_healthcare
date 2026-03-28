@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "version": "0.5.1-pw003-route-surface-m2a",
-    "last_updated": "2026-03-28T10:06:00Z",
+    "version": "0.5.2-pw003-route-surface-m2b",
+    "last_updated": "2026-03-28T10:10:00Z",
     "usage_rule": "Update this map before and after every meaningful change to evaluate ripple effects."
   },
   "domains": [
@@ -146,6 +146,24 @@
     ]
   },
   "change_impact_entries": [
+    {
+      "id": "DIM-0008",
+      "timestamp": "2026-03-28T10:10:00Z",
+      "change_title": "Clarify caregiver route placeholder identifiers",
+      "changed_artifacts": [
+        "apps/web/src/app/(app)/dashboard/caregiver/page.tsx"
+      ],
+      "impacted_domains": [
+        "routes",
+        "dashboards",
+        "ui_components"
+      ],
+      "impact_summary": "Dashboard links now use clearer placeholder IDs for dynamic routes.",
+      "required_follow_up": [
+        "replace placeholders with runtime IDs from data queries"
+      ],
+      "status": "recorded"
+    },
     {
       "id": "DIM-0007",
       "timestamp": "2026-03-28T10:06:00Z",

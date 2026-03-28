@@ -1,9 +1,53 @@
 {
   "metadata": {
-    "version": "0.5.1-pw003-route-surface-m2a",
-    "last_updated": "2026-03-28T10:06:00Z"
+    "version": "0.5.2-pw003-route-surface-m2b",
+    "last_updated": "2026-03-28T10:10:00Z"
   },
   "entries": [
+    {
+      "timestamp": "2026-03-28T10:10:00Z",
+      "task_title": "Clarify caregiver route placeholders",
+      "what_changed": [
+        "Renamed caregiver dashboard placeholder route ids to explicit example-occurrence-id and example-week-id values.",
+        "Refreshed memory metadata timestamps."
+      ],
+      "why_it_changed": "Reduce ambiguity while preserving scaffold behavior and dynamic route expectations.",
+      "affected_files": [
+        "apps/web/src/app/(app)/dashboard/caregiver/page.tsx",
+        "project_memory/*.json"
+      ],
+      "affected_modules": [
+        "dashboards",
+        "daily_entries",
+        "weekly_forms"
+      ],
+      "affected_dashboards": [
+        "caregiver"
+      ],
+      "impacted_workflows": [
+        "wf_caregiver_daily_visit",
+        "wf_weekly_submission_and_signatures"
+      ],
+      "impacted_entities": [
+        "schedule_occurrence",
+        "weekly_form"
+      ],
+      "memory_files_updated": [
+        "app_graph.json",
+        "workflow_map.json",
+        "module_registry.json",
+        "dashboard_registry.json",
+        "shared_data_contracts.json",
+        "pending_work.json",
+        "change_log.json",
+        "feature_decisions.json",
+        "route_map.json",
+        "dependency_impact_map.json"
+      ],
+      "follow_up_tasks": [
+        "bind real identifiers from scheduling and weekly-form data queries"
+      ]
+    },
     {
       "timestamp": "2026-03-28T10:06:00Z",
       "task_title": "Align caregiver dashboard links with parameterized visit/week routes",
